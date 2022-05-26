@@ -1,170 +1,176 @@
 <script>
   import ViewResultLoading from './ViewResultLoading.svelte';
   import { fieldID, SearchTerm, fields, pages } from './store.js';
-  import { Query } from '@sveltestack/svelte-query';
+  import { useQuery } from '@sveltestack/svelte-query';
 
   $: s = $SearchTerm.toLowerCase();
 
   $: field = $fields;
   const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
-  async function fetchPosts({ s, field }) {
+  async function fetchPosts(s, $pages) {
     if ($SearchTerm.length == 0) {
-      const res = await fetch(
-        `${url}?s=tech&page=${$pages}&per_page=10&fields=5`
-      );
+      const res = await fetch(`${url}?page=${$pages}&per_page=10`);
 
       const data = await res.json();
 
-      return data;
+      return { data };
     } else if ($fields.length == 0) {
       const res = await fetch(
-        `${url}?s=${s}&page=${$pages}&per_page=10&fields=7`
+        `${url}?s=${s}&page=${$pages}&per_page=10&fields=-1`
       );
 
       const data = await res.json();
 
-      return data;
+      return { data };
     } else {
-      const res = await fetch(
-        `${url}?s=${s}&page=${$pages}&per_page=10&fields=${field}`
-      );
+      const res = await fetch(`${url}?page=${$pages}&per_page=10`);
 
       const data = await res.json();
 
-      return data;
+      return { data };
     }
   }
 
-  $: queryOptions = {
-    queryKey: ['seeMore', s, field],
-    queryFn: () => fetchPosts({ s, field }),
-    enabled: $SearchTerm !== '' || $SearchTerm === '',
+  $: queryResult = useQuery(['posts', s, field], () => fetchPosts(s, field), {
     keepPreviousData: true,
     cacheTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
-  };
+  });
+
+  $: d = $queryResult.data;
+  $: isFetching = $queryResult.isFetching;
+  $: isLoading = $queryResult.isLoading;
+  $: isError = $queryResult.isError;
+  $: data = d?.data;
+  $: console.log(data);
 </script>
 
 <!-- <SearchFormClose /> -->
 <div class="wrapper">
-  <Query options={queryOptions}>
-    <div slot="query" let:queryResult={{ data, isFetching, isError }}>
-      <div class="results svelte-fhxlyi">
-        {#if isFetching}
-          <ViewResultLoading />
-        {:else if isError}
-          <span>Error</span>
-        {:else}
-          {#each data as { posts, id } (id)}
-            {#each posts as post}
-              {#if post.id == $fieldID}
-                <div class="cs-hero">
-                  <div class="client-success-story">client success story</div>
-                </div>
-                <div class="container">
-                  <div class="case-study-outer">
-                    <article class="post">
-                      <section class="cs-entry">
-                        <div>
-                          <img
-                            src={post.image}
-                            alt={post.title}
-                            loading="lazy"
-                            width="800px"
-                            height="450px"
-                            sizes="(max-width: 800px) 100vw, 800px"
-                          />
-                        </div>
-                        <div class="entry-outer">
-                          <header>
-                            <h1 class="cs-title">{post.title}</h1>
-                          </header>
-                          <footer>
-                            <!-- <a class="pdf-button" href={post.pdf}
+  <!-- <Query options={queryOptions}>
+    <div slot="query" let:queryResult={{ data, isFetching, isError }}> -->
+  <div class="results svelte-fhxlyi">
+    {#if isFetching}
+      <ViewResultLoading />
+    {:else if isError}
+      <span>Error</span>
+    {:else}
+      {#each data?.posts as post}
+        {#if post.id == $fieldID}
+          <div class="cs-hero">
+            <div class="client-success-story">client success story</div>
+          </div>
+          <div class="container">
+            <div class="case-study-outer">
+              <article class="post">
+                <section class="cs-entry">
+                  <div>
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      loading="lazy"
+                      width="800px"
+                      height="450px"
+                      sizes="(max-width: 800px) 100vw, 800px"
+                    />
+                  </div>
+                  <div class="entry-outer">
+                    <header>
+                      <h1 class="cs-title">{post.title}</h1>
+                    </header>
+                    <footer>
+                      <!-- <a class="pdf-button" href={post.pdf}
                               >DOWNLOAD PDF</a
                             > -->
-                          </footer>
-                        </div>
-                      </section>
-                      <div class="cs-results">
-                        {#each post.results as result}
-                          <div class="cs-result">
-                            <div class="cs-result-value">{result.value}</div>
-                            <div class="cs-result-label">{result.label}</div>
-                          </div>
-                        {/each}
+                    </footer>
+                  </div>
+                </section>
+                <div class="cs-results">
+                  {#each post.results as result}
+                    <div class="cs-result">
+                      <div class="cs-result-value">{result.value}</div>
+                      <div class="cs-result-label">{result.label}</div>
+                    </div>
+                  {/each}
+                </div>
+                <div class="cs-campaign">
+                  <div class="cs-specs">
+                    <div>
+                      <span class="fa fa-briefcase" />
+                      <div class="cs-specs-label">Industry</div>
+                      <div class="cs-specs-post">{post.product}</div>
+                    </div>
+                    <div>
+                      <span class="fa fa-map-marker-alt" />
+                      <div class="cs-specs-label">Location</div>
+                      <div class="cs-specs-post">
+                        {post.clientLocation}
                       </div>
-                      <div class="cs-campaign">
-                        <div class="cs-specs">
-                          <div>
-                            <span class="fa fa-briefcase" />
-                            <div class="cs-specs-label">Industry</div>
-                            <div class="cs-specs-post">{post.product}</div>
-                          </div>
-                          <div>
-                            <span class="fa fa-map-marker-alt" />
-                            <div class="cs-specs-label">Location</div>
-                            <div class="cs-specs-post">
-                              {post.clientLocation}
-                            </div>
-                          </div>
-                          <div>
-                            <span class="fa fa-building" />
-                            <div class="cs-specs-label">Headquarters</div>
-                            <div class="cs-specs-post">{post.clientHQ}</div>
-                          </div>
-                          <div>
-                            <span class="fa fa-chart-line" />
-                            <div class="cs-specs-label">Campaign Type</div>
-                            {#each post.campaign as campaign}
-                              <div>
-                                <div class="cs-specs-post">
-                                  {campaign.label}
-                                </div>
-                              </div>
-                            {/each}
-                          </div>
-                          <div>
-                            <span class="fa fa-map-marker-alt" />
-                            <div class="cs-specs-label">Target Location</div>
-                            <div class="cs-specs-post">
-                              {post.targetLocation}
-                            </div>
-                          </div>
-                          <div>
-                            <span class="fa fa-briefcase" />
-                            <div class="cs-specs-label">Target Industries</div>
-                            <div class="cs-specs-post">
-                              {post.targetIndustry}
-                            </div>
-                          </div>
-                          <div>
-                            <span class="fa fa-user" />
-                            <div class="cs-specs-label">Target Contacts</div>
-                            <div class="cs-specs-post">
-                              {post.targetDM}
-                            </div>
+                    </div>
+                    <div>
+                      <span class="fa fa-building" />
+                      <div class="cs-specs-label">Headquarters</div>
+                      <div class="cs-specs-post">{post.clientHQ}</div>
+                    </div>
+                    <div>
+                      <span class="fa fa-chart-line" />
+                      <div class="cs-specs-label">Campaign Type</div>
+                      {#each post.campaign as campaign}
+                        <div>
+                          <div class="cs-specs-post">
+                            {campaign.label}
                           </div>
                         </div>
-                        <div class="cs-content">
-                          {@html post.content}
-                        </div>
-                        <!-- <div class="btn-btm">
+                      {/each}
+                    </div>
+                    <div>
+                      <span class="fa fa-map-marker-alt" />
+                      <div class="cs-specs-label">Target Location</div>
+                      <div class="cs-specs-post">
+                        {post.targetLocation}
+                      </div>
+                    </div>
+                    <div>
+                      <span class="fa fa-briefcase" />
+                      <div class="cs-specs-label">Target Industries</div>
+                      <div class="cs-specs-post">
+                        {post.targetIndustry}
+                      </div>
+                    </div>
+                    <div>
+                      <span class="fa fa-user" />
+                      <div class="cs-specs-label">Target Contacts</div>
+                      <div class="cs-specs-post">
+                        {post.targetDM}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cs-highlights">
+                    <h2>Highlights</h2>
+                    <ul>
+                      {#each post.highlights as { highlight }}
+                        <li>{highlight}</li>
+                      {/each}
+                    </ul>
+                  </div>
+                  <div class="cs-content">
+                    {@html post.content}
+                  </div>
+                  <!-- <div class="btn-btm">
                         <a class="pdf-button" href={post.pdf}>DOWNLOAD PDF</a>
                       </div> -->
-                      </div>
-                    </article>
-                  </div>
                 </div>
-              {/if}
-            {/each}
-          {/each}
+              </article>
+            </div>
+          </div>
         {/if}
-      </div>
-    </div>
-  </Query>
+      {/each}
+    {/if}
+  </div>
 </div>
 
+<!-- </Query>
+</div> -->
 <style>
   .cs-content {
     font-size: 1rem;
@@ -232,6 +238,25 @@
     width: auto;
     margin-left: 0;
     background-color: rgba(247, 104, 35, 0.07);
+  }
+  .cs-highlights ul {
+    margin: 1rem 0;
+    padding: 0 0 0 2.5rem;
+  }
+
+  .cs-highlights li {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    color: #5f7380;
+  }
+  .cs-highlights h2 {
+    color: #014e89;
+    font-family: 'Work Sans', work-sans, sans-serif;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
   }
   .cs-specs {
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -323,6 +348,8 @@
     padding: calc(15vh / 2 - 1.125rem) 0 0;
     letter-spacing: 0.05em;
     background-color: #063060;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
   }
   .client-success-story {
     font-size: 2.25rem;

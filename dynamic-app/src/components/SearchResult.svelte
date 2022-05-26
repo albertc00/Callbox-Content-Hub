@@ -5,7 +5,7 @@
   import ButtonLink from './Functions/ButtonLink.svelte';
   import TableFunc from './Functions/TableFunc.svelte';
 
-  import { Query } from '@sveltestack/svelte-query';
+  import { useQuery } from '@sveltestack/svelte-query';
   import Table from './Table.svelte';
   import { LightPaginationNav } from './pagination/index';
   import TableLoading from './TableLoading.svelte';
@@ -24,20 +24,28 @@
 
   let s;
   $: s = $SearchTerm.toLowerCase();
+  $: page = $pages;
+  async function fetchPosts(page) {
+    const res = await fetch(`${url}?page=${page}&per_page=9`);
 
-  async function fetchPosts($pages, s) {
-    const data = await fetch(`${url}?s=${s}&page=${$pages}&per_page=10&fields=-1
-      `).then((res) => res.json());
+    const data = await res.json();
 
-    return data;
+    return { data };
   }
-  $: queryOptions = {
-    queryKey: ['posts', $pages, s],
-    queryFn: () => fetchPosts($pages, s),
+
+  $: queryResult = useQuery(['posts', page], () => fetchPosts(page), {
     keepPreviousData: true,
-    staleTime: Infinity,
     cacheTime: 1000 * 60 * 5,
-  };
+    refetchOnWindowFocus: false,
+  });
+
+  $: d = $queryResult.data;
+  $: isFetching = $queryResult.isFetching;
+  $: isLoading = $queryResult.isLoading;
+  $: isError = $queryResult.isError;
+  $: data = d?.data;
+
+  $: console.log(data?.posts);
 
   import { onMount } from 'svelte';
   import NoResult from './NoResult.svelte';
@@ -55,13 +63,13 @@
 
   onMount(async () => parseScroll());
 
-  const colDef = [
+  $: colDef = [
     {
       title: 'Title',
       headerComponent: Header,
       cellComponent: TextWithButton,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('title'),
       args: { selector: 'title' },
     },
     {
@@ -69,7 +77,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('product'),
       args: { selector: 'product' },
     },
     {
@@ -77,7 +85,7 @@
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('pdf'),
       args: { selector: 'pdf' },
     },
     {
@@ -85,7 +93,7 @@
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('link'),
       args: { selector: 'link' },
     },
     {
@@ -93,7 +101,7 @@
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('linkUnlocked'),
       args: { selector: 'linkUnlocked' },
     },
     {
@@ -101,7 +109,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('target-location'),
       args: { selector: 'targetLocation' },
     },
     {
@@ -109,7 +117,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('target-dm'),
       args: { selector: 'targetDM' },
     },
     {
@@ -117,7 +125,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('target-industry'),
       args: { selector: 'targetIndustry' },
     },
     {
@@ -125,7 +133,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('client-location'),
       args: { selector: 'clientLocation' },
     },
     {
@@ -133,7 +141,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('clientHQ'),
       args: { selector: 'clientHQ' },
     },
     {
@@ -141,7 +149,7 @@
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('campaign'),
       args: { selector: 'campaign' },
     },
     {
@@ -149,7 +157,7 @@
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('results'),
       args: { selector: 'results' },
     },
   ];
@@ -176,58 +184,58 @@
       </button>
     </Modal>
   </div>
-  <Query options={queryOptions}>
-    <div slot="query" let:queryResult={{ data, isFetching, isError }}>
-      <div class="cntnr">
-        <div class="results svelte-fhxlyi">
-          {#if isFetching}
-            <div class="loading">
-              <div
-                class="table-wrapper"
-                class:tableScrolled={yTop > 45}
-                bind:this={box}
-                on:scroll={parseScroll}
-                on:mousemove={parseScroll}
-              >
-                <TableLoading />
-              </div>
-            </div>
-          {:else if isError}
-            <span>Error</span>
-          {:else if data?.length}
-            <h2 class="table-label">Case Studies</h2>
-            <div class="table-container">
-              <div
-                class="table-wrapper"
-                class:tableScrolled={yTop > 50}
-                bind:this={box}
-                on:scroll={parseScroll}
-                on:mousemove={parseScroll}
-              >
-                <!-- this is table -->
-                <Table {data} {colDef} />
-
-                <!-- table helloworld -->
-              </div>
-            </div>
-            <div class="area-2">
-              <LightPaginationNav
-                totalItems={data[0].total}
-                pageSize={10}
-                currentPage={$pages}
-                limit={1}
-                on:setPage={(e) => ($pages = e.detail.page)}
-              />
-            </div>
-          {:else}
-            <NoResult />
-          {/if}
+  <!-- <Query options={queryOptions}>
+    <div slot="query" let:queryResult={{ data, isFetching, isError }}> -->
+  <div class="cntnr">
+    <div class="results svelte-fhxlyi">
+      {#if isFetching}
+        <div class="loading">
+          <div
+            class="table-wrapper"
+            class:tableScrolled={yTop > 45}
+            bind:this={box}
+            on:scroll={parseScroll}
+            on:mousemove={parseScroll}
+          >
+            <TableLoading />
+          </div>
         </div>
-      </div>
+      {:else if isError}
+        <span>Error</span>
+      {:else if data.posts?.length}
+        <h2 class="table-label">Case Studies</h2>
+        <div class="table-container">
+          <div
+            class="table-wrapper"
+            class:tableScrolled={yTop > 50}
+            bind:this={box}
+            on:scroll={parseScroll}
+            on:mousemove={parseScroll}
+          >
+            <!-- this is table -->
+            <Table data={data?.posts} {colDef} />
+
+            <!-- table helloworld -->
+          </div>
+        </div>
+        <div class="area-2">
+          <LightPaginationNav
+            totalItems={data?.total}
+            pageSize={10}
+            currentPage={$pages}
+            limit={1}
+            on:setPage={(e) => ($pages = e.detail.page)}
+          />
+        </div>
+      {:else}
+        <NoResult />
+      {/if}
     </div>
-  </Query>
+  </div>
 </div>
 
+<!-- </Query>
+</div> -->
 <style>
   .top-wrapper {
     background-color: #f7f7f7;

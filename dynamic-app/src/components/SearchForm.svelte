@@ -18,9 +18,9 @@
   <Modal show={$modal}>
     <button class="menubar" on:click={showModal} aria-label="Start search">
       <div class="menubarlabel">
-        <svg xmlns="http://www.w3.org/2000/svg" height="40" width="40"
+        <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48"
           ><path
-            d="M17.75 28.917V27.917H22.25V28.917ZM6.083 10.417V9.417H33.917V10.417ZM11.083 19.667V18.667H28.917V19.667Z"
+            d="M20 36V33H28V36ZM6 15V12H42V15ZM12 25.5V22.5H36V25.5Z"
           /></svg
         ><span class="menulabel">Filters</span>
       </div>

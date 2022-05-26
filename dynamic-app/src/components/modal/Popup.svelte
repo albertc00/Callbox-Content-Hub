@@ -15,7 +15,6 @@
 
     $cols = $cols;
   }
-  $: console.log($cols);
 </script>
 
 <!-- <form class="form" on:submit|preventDefault={handleOnSubmit}>

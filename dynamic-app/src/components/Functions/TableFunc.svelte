@@ -2,7 +2,6 @@
   export let post;
   export let selector = 'text';
   const text = selector.split('.').reduce((prev, curr) => prev[curr], post);
-  console.log(text);
 </script>
 
 {#if selector === 'campaign'}

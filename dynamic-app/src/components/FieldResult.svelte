@@ -6,7 +6,7 @@
   import TableFunc from './Functions/TableFunc.svelte';
 
   import Selection from './Selection.svelte';
-  import { Query } from '@sveltestack/svelte-query';
+  import { useQuery } from '@sveltestack/svelte-query';
   import { SearchTerm, selection, fields, cols, pages, fieldID } from './store';
   import { col } from './SelectColumn';
   import { LightPaginationNav } from './pagination/index.js';
@@ -18,50 +18,51 @@
   import { writable } from 'svelte/store';
   import ViewResult from './ViewResult.svelte';
   import Popup from './modal/Popup.svelte';
+  import Table from './Table.svelte';
   const showModal = () => modal.set(bind(Popup));
   const modal = writable(null);
 
-  let page = 1;
-  let s;
-
   $: s = $SearchTerm.toLowerCase();
   $: page = $pages;
-  $: field = $fields;
+  $: field = $fields.join(',');
 
   const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
-  async function fetchPosts({ page = 1, s, field, $selection }) {
-    if ($selection > 0) {
-      const res = await fetch(
-        `${url}?s=${s}&page=${page}&per_page=10&fields=${$selection}`
-      );
+  async function fetchPosts(page = 1, s, field) {
+    const res = await fetch(
+      `${url}?s=${s}&page=${page}&per_page=9&fields=${field}`
+    );
 
-      const data = await res.json();
+    const data = await res.json();
 
-      return data;
-    } else {
-      const res = await fetch(
-        `${url}?s=${s}&page=${page}&per_page=10&fields=${field.join(',')}`
-      );
-
-      const data = await res.json();
-
-      return data;
-    }
+    return data;
   }
 
-  $: queryOptions = {
-    queryKey: ['seeMore', page, s, field, $selection],
-    queryFn: () => fetchPosts({ page, s, field, $selection }),
-    enabled: $SearchTerm !== '',
-    keepPreviousData: true,
-    cacheTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
-  };
+  $: queryResult = useQuery(
+    ['posts', page, s, field],
+    () => fetchPosts(page, s, field),
+    {
+      keepPreviousData: true,
+      cacheTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const ids = new Set();
+  $: data = $queryResult.data
+    ?.flatMap(({ posts }) => posts)
+    .filter(({ id }) => (ids.has(id) ? false : ids.add(id)));
+  $: isFetching = $queryResult.isFetching;
+  $: isLoading = $queryResult.isLoading;
+  $: isError = $queryResult.isError;
+  $: console.log(data);
+  // res.flatMap(({ posts }) => posts).filter(({ id }) => ids.has(id) ? false : ids.add(id));
 
   import { onMount } from 'svelte';
-  let box;
 
+  let box;
   let yTop = 0;
+  let yHeight;
+  let yScroll;
 
   function parseScroll() {
     yTop = box.scrollTop;
@@ -71,14 +72,13 @@
 
   onMount(async () => parseScroll());
 
-  import Table from './Table.svelte';
-  const colDef = [
+  $: colDef = [
     {
       title: 'Title',
       headerComponent: Header,
       cellComponent: TextWithButton,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('title'),
       args: { selector: 'title' },
     },
     {
@@ -86,7 +86,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('product'),
       args: { selector: 'product' },
     },
     {
@@ -94,7 +94,7 @@
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('pdf'),
       args: { selector: 'pdf' },
     },
     {
@@ -102,7 +102,7 @@
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('link'),
       args: { selector: 'link' },
     },
     {
@@ -110,7 +110,7 @@
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('linkUnlocked'),
       args: { selector: 'linkUnlocked' },
     },
     {
@@ -118,7 +118,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('target-location'),
       args: { selector: 'targetLocation' },
     },
     {
@@ -126,7 +126,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('target-dm'),
       args: { selector: 'targetDM' },
     },
     {
@@ -134,7 +134,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('target-industry'),
       args: { selector: 'targetIndustry' },
     },
     {
@@ -142,7 +142,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('client-location'),
       args: { selector: 'clientLocation' },
     },
     {
@@ -150,7 +150,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('clientHQ'),
       args: { selector: 'clientHQ' },
     },
     {
@@ -158,7 +158,7 @@
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('campaign'),
       args: { selector: 'campaign' },
     },
     {
@@ -166,7 +166,7 @@
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      hidden: false,
+      hidden: !$cols.includes('results'),
       args: { selector: 'results' },
     },
   ];
@@ -196,9 +196,9 @@ return data; -->
 {/if}
 <div class="top-wrapper">
   <div class="modal-wrapper">
-    <div class="modal">
+    <!-- <div class="modal">
       <Selection />
-    </div>
+    </div> -->
     <div class="dropdwn-selection">
       <Modal show={$modal}>
         <button class="modal-button" on:click={showModal}>
@@ -217,60 +217,60 @@ return data; -->
       </Modal>
     </div>
   </div>
-
+  <!-- 
   <Query options={queryOptions}>
-    <div slot="query" let:queryResult={{ data, isFetching, isError }}>
-      <div class="cntnr">
-        <div class="results svelte-fhxlyi">
-          {#if isFetching}
-            <div
-              class="table-wrapper"
-              class:tableScrolled={yTop > 50}
-              bind:this={box}
-              on:scroll={parseScroll}
-              on:mousemove={parseScroll}
-            >
-              <FieldResultLoading />
-            </div>
-          {:else if isError}
-            <span>Error</span>
-          {:else if data?.length}
-            <h2 class="table-label">Case Studies</h2>
-            <h2 class="table-sublabel">By {data[0].label}</h2>
-
-            <div class="table-container">
-              <div
-                class="table-wrapper"
-                class:tableScrolled={yTop > 50}
-                bind:this={box}
-                on:scroll={parseScroll}
-                on:mousemove={parseScroll}
-              >
-                <!-- this is table -->
-                <Table {data} {colDef} />
-                <!-- table helloworld -->
-              </div>
-            </div>
-            {#if $selection > 0}
-              <div class="area-2">
-                <LightPaginationNav
-                  totalItems={data[0].total}
-                  pageSize={10}
-                  currentPage={$pages}
-                  limit={1}
-                  on:setPage={(e) => ($pages = e.detail.page)}
-                />
-              </div>
-            {/if}
-          {:else}
-            <NoResult />
-          {/if}
+    <div slot="query" let:queryResult={{ data, isFetching, isError }}> -->
+  <div class="cntnr">
+    <div class="results svelte-fhxlyi">
+      {#if isFetching}
+        <div
+          class="table-wrapper"
+          class:tableScrolled={yTop > 50}
+          bind:this={box}
+          on:scroll={parseScroll}
+          on:mousemove={parseScroll}
+        >
+          <FieldResultLoading />
         </div>
-      </div>
+      {:else if isError}
+        <span>Error</span>
+      {:else if data?.length}
+        <h2 class="table-label">Case Studies</h2>
+        <h2 class="table-sublabel">By {data.label}</h2>
+
+        <div class="table-container">
+          <div
+            class="table-wrapper"
+            class:tableScrolled={yTop > 50}
+            bind:this={box}
+            on:scroll={parseScroll}
+            on:mousemove={parseScroll}
+          >
+            <!-- this is table -->
+            <Table {data} {colDef} />
+            <!-- table helloworld -->
+          </div>
+        </div>
+        {#if $selection > 0}
+          <div class="area-2">
+            <LightPaginationNav
+              totalItems={data?.total}
+              pageSize={9}
+              currentPage={$pages}
+              limit={1}
+              on:setPage={(e) => ($pages = e.detail.page)}
+            />
+          </div>
+        {/if}
+      {:else}
+        <NoResult />
+      {/if}
     </div>
-  </Query>
+  </div>
 </div>
 
+<!-- </Query>
+</div> -->
 <style>
   .top-wrapper {
     background-color: #f7f7f7;
