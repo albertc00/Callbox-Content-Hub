@@ -263,12 +263,6 @@
     font-weight: 650;
     font-size: 2rem;
   }
-  /* .modal-button {
-    display: grid;
-    grid-template-columns: 0.4fr 1fr;
-    padding-top: 20px;
-    align-items: center;
-  } */
 
   .table-container {
     overflow: auto;
@@ -286,24 +280,6 @@
   .loading {
     padding-top: 55px;
   }
-
-  /* button.modal-button {
-    background-color: #ffca09;
-    border: 1px solid #ffca09;
-    border-radius: 0.25rem;
-    color: #004b84;
-    font-weight: 600;
-    letter-spacing: 0.0375rem;
-    line-height: unset;
-    padding: 0.3rem 0.6rem;
-    transition: all 0.3s;
-    text-transform: uppercase;
-  }
-
-  button.modal-button:hover {
-    background-color: unset;
-    cursor: pointer;
-  } */
 
   .area-2 {
     grid-column-start: 2;

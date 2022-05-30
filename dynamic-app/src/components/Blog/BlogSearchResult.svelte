@@ -1,8 +1,13 @@
 <script>
+  import FeaturedImage from './../Functions/FeaturedImage.svelte';
+  import TextWithButton from '../Functions/TextWithButton.svelte';
+  import Textonly from '../Functions/Textonly.svelte';
+  import Header from '../Functions/Header.svelte';
+
+  import Table from '../Table.svelte';
   import { useQuery } from '@sveltestack/svelte-query';
   import NoResult from './NoResult.svelte';
   import { fieldID, SearchTerm, pages } from '../store';
-  import BlogTable from './BlogTable.svelte';
   import TableLoading from './TableLoading.svelte';
   import { LightPaginationNav } from '../pagination/index';
 
@@ -43,12 +48,6 @@
   $: totalPage = d?.totalPage;
   $: console.log(data);
 
-  // function onClick(value) {
-  //   $seeMore = true;
-  //   $isSearching = false;
-  //   $SearchTerm = s;
-  //   $fields = value;
-  // }
   import { onMount } from 'svelte';
   import SearchForm from './SearchForm.svelte';
   let box;
@@ -61,6 +60,41 @@
   }
 
   onMount(async () => parseScroll());
+
+  $: colDef = [
+    {
+      title: 'Title',
+      headerComponent: Header,
+      cellComponent: TextWithButton,
+      cellAs: 'td',
+      hidden: false,
+      args: { selector: 'title.rendered' },
+    },
+    {
+      title: 'Status',
+      headerComponent: Header,
+      cellComponent: Textonly,
+      cellAs: 'td',
+      hidden: false,
+      args: { selector: 'status' },
+    },
+    {
+      title: 'Excerpt',
+      headerComponent: Header,
+      cellComponent: Textonly,
+      cellAs: 'td',
+      hidden: false,
+      args: { selector: 'excerpt.rendered' },
+    },
+    {
+      title: 'Featured Image',
+      headerComponent: Header,
+      cellComponent: FeaturedImage,
+      cellAs: 'td',
+      hidden: false,
+      args: { selector: 'slug' },
+    },
+  ];
 </script>
 
 <SearchForm />
@@ -109,7 +143,7 @@
           on:scroll={parseScroll}
           on:mousemove={parseScroll}
         >
-          <BlogTable tableData={data} />
+          <Table {data} {colDef} />
         </div>
       </div>
       <div class="area-2">

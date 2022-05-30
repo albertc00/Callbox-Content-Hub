@@ -31,23 +31,10 @@
     const { self: _, ...a } = actionsCopy.find(({ self }) => target === self);
     showActions = false;
     onAction(a);
-    // opencolmodal();
   }
-
-  // import ModalPrev from './modal/ModalPrev.svelte';
-  // import Popup from './modal/Popup.svelte';
-  // import { colModal } from './store';
-
-  // function opencolmodal() {
-  //   $colModal = true;
-  // }
 </script>
 
 <svelte:window on:mousedown={handleMouseDown} />
-
-<!-- {#if $colModal}
-  <ModalPrev modalContent={Popup} />
-{/if} -->
 
 <div class="dda">
   <button

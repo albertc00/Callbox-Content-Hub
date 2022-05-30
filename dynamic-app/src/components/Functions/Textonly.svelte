@@ -1,13 +1,12 @@
 <script>
   export let post;
   export let selector = 'text';
-
   const text = selector.split('.').reduce((prev, curr) => prev[curr], post);
 </script>
 
 <div class="center">
   <span class="text">
-    {text}
+    {@html text}
   </span>
 </div>
 
