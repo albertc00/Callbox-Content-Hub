@@ -14,3 +14,4 @@ export const fieldID = writable('');
 export const viewfield = writable(false);
 export const pages = writable(1);
 export const category = writable(1);
+export const colModal = writable(false);

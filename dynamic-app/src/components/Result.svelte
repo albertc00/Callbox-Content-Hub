@@ -4,12 +4,13 @@
   import Header from './Functions/Header.svelte';
   import ButtonLink from './Functions/ButtonLink.svelte';
   import TableFunc from './Functions/TableFunc.svelte';
+  import DropdownActions from './DropdownActions.svelte';
 
   import { useQuery } from '@sveltestack/svelte-query';
   import Table from './Table.svelte';
   import { LightPaginationNav } from './pagination/index';
   import TableLoading from './TableLoading.svelte';
-  import { cols, pages, fieldID, category } from './store';
+  import { cols, pages, fieldID, category, colModal } from './store';
   import { col } from './SelectColumn';
 
   import Modal, { bind } from './modal/index.js';
@@ -159,71 +160,43 @@
     },
   ];
   let showAction = false;
+
+  const ddaText = 'Show actions';
+  const ddaActions = [
+    { text: 'Edit columns', id: 'EDIT_COLUMNS' },
+    { text: 'Coming soon...', id: 'COMING_SOON_1' },
+    { text: 'Coming soon...', id: 'COMING_SOON_2' },
+  ];
+
+  function handleDropdownAction({ text, id }) {
+    console.log(`${id}: ${text}`);
+
+    switch (id) {
+      case 'EDIT_COLUMNS':
+        $colModal = true;
+        break;
+      default:
+        break;
+    }
+  }
 </script>
 
 {#if $fieldID > 0}
   <ModalPrev modalContent={ViewResult} />
-  <!-- <Modal show={modal.set(bind(ViewResult))} /> -->
+  <!-- <Modal show={modal.set(bind(ViewResult))} />  -->
+{/if}
+
+{#if $colModal}
+  <ModalPrev modalContent={Popup} />
 {/if}
 
 <div class="top-wrapper">
   <div class="actionContainer">
-    <!-- <button
-      class="modal-button-outer"
-      on:click|preventDefault={() => (showAction = true)}
-    >
-      <span>action</span>
-      <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20"
-        ><path
-          d="M10 12.812 5 7.812 6.229 6.583 10 10.354 13.771 6.583 15 7.812Z"
-        /></svg
-      >
-    </button> -->
-    <div class="modal-outer">
-      <button
-        class="modal-button-outer"
-        on:click|preventDefault={() => (showAction = true)}
-      >
-        <span>action</span>
-        <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20"
-          ><path
-            d="M10 12.812 5 7.812 6.229 6.583 10 10.354 13.771 6.583 15 7.812Z"
-          /></svg
-        >
-      </button>
-    </div>
-    {#if showAction}
-      <div id="selection" class="modal">
-        <ul
-          class="dropdown-inner"
-          tabindex="-1"
-          on:blur={() => (showAction = false)}
-        >
-          <li>
-            <Modal show={$modal}>
-              <button class="modal-button" on:click={showModal}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#014e89"
-                  height="30"
-                  width="35"
-                  viewBox="-5 7 55 35"
-                  ><path
-                    d="M9 39H11.2L35.45 14.75L34.35 13.65L33.25 12.55L9 36.8ZM6 42V35.6L35.4 6.2Q36.25 5.35 37.525 5.375Q38.8 5.4 39.65 6.25L41.8 8.4Q42.65 9.25 42.65 10.5Q42.65 11.75 41.8 12.6L12.4 42ZM39.5 10.45 37.45 8.4ZM35.45 14.75 34.35 13.65 33.25 12.55 35.45 14.75Z"
-                  /></svg
-                >
-                <span class="modal-text">Edit Columns</span>
-              </button>
-            </Modal>
-          </li>
-          <li>
-            <button class="modal-button"
-              ><span class="modal-text">Coming Soon...</span></button
-            >
-          </li>
-        </ul>
-      </div>
-    {/if}
+    <DropdownActions
+      text={ddaText}
+      actions={ddaActions}
+      onAction={handleDropdownAction}
+    />
   </div>
 
   <!-- <Query options={queryOptions}>
@@ -271,22 +244,17 @@
 </div> -->
 <style>
   .actionContainer {
-    position: relative;
-    width: max-content;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: right;
+    width: 98vw;
+    margin: 0 auto;
   }
-  /* .modal {
-    position: relative;
 
-     z-index: 9999; 
-  }*/
-  .dropdown-inner {
-    position: absolute;
-    right: 0;
-    z-index: 9999;
-  }
   .top-wrapper {
     background-color: #f7f7f7;
   }
+
   .table-label {
     position: absolute;
     top: 7rem;
@@ -301,13 +269,6 @@
     padding-top: 20px;
     align-items: center;
   } */
-  .modal-text {
-    color: #014e89;
-    font-family: 'open Sans', sans-serif;
-    font-weight: 650;
-    font-size: 1rem;
-    text-transform: capitalize;
-  }
 
   .table-container {
     overflow: auto;
@@ -324,23 +285,6 @@
 
   .loading {
     padding-top: 55px;
-  }
-  .modal {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    grid-auto-flow: column;
-    justify-content: end;
-    width: 95vw;
-    margin: 0 auto;
-  }
-  .modal-outer {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    display: grid;
-    grid-auto-flow: column;
-    justify-content: end;
-    width: 95vw;
-    margin: 0 auto;
   }
 
   /* button.modal-button {
@@ -360,24 +304,6 @@
     background-color: unset;
     cursor: pointer;
   } */
-
-  button.modal-button-outer {
-    background-color: #ffca09;
-    border: 1px solid #ffca09;
-    border-radius: 0.25rem;
-    color: #004b84;
-    font-weight: 600;
-    letter-spacing: 0.0375rem;
-    line-height: unset;
-    padding: 0.3rem 0.6rem;
-    transition: all 0.3s;
-    text-transform: uppercase;
-  }
-
-  button.modal-button-outer:hover {
-    background-color: unset;
-    cursor: pointer;
-  }
 
   .area-2 {
     grid-column-start: 2;

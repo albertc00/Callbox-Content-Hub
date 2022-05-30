@@ -19,7 +19,7 @@
 
 <!-- <form class="form" on:submit|preventDefault={handleOnSubmit}>
   <div class="wrapper svelte-iqmikt"> -->
-<h2>Select What Column you want to display</h2>
+<h2>Select what column you want to display</h2>
 <ul class="checbox-filters">
   {#each col as { id, label } (id)}
     <li class="check-svelte">
@@ -42,6 +42,9 @@
 <!-- </div>
 </form> -->
 <style>
+  h2 {
+    margin-top: 0;
+  }
   ul {
     list-style-type: none;
   }
@@ -81,6 +84,8 @@
       inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05),
       inset 15px 10px -12px rgba(255, 255, 255, 0.1);
     color: #99a1a7;
+    background-color: #ffca0c;
+    border: 2px solid #ffca0c;
   }
   .checkbox-svelte:checked:after {
     content: '\2714';
