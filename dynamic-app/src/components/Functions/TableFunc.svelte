@@ -6,9 +6,15 @@
   import Modal from '../modal/Modal.svelte';
 </script>
 
-<div class="center">
-  <button class="cs_button" on:click={() => (show = true)}> Results </button>
-</div>
+{#if selector === 'results'}
+  <div class="center">
+    <button class="cs_button" on:click={() => (show = true)}> Results </button>
+  </div>
+{:else}
+  <div class="center">
+    <button class="cs_button" on:click={() => (show = true)}> Campaign </button>
+  </div>
+{/if}
 
 <Modal title="Results" bind:show>
   {#if selector === 'campaign'}
