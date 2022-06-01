@@ -240,10 +240,6 @@
     gap: 1rem;
   }
 
-  .cols {
-    /* 		padding: 1rem; */
-  }
-
   h6 {
     text-transform: uppercase;
     font-family: 'Lato', sans-serif;

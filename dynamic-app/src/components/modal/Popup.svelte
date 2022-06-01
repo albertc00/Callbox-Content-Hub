@@ -1,14 +1,7 @@
 <script>
   import { col } from '../SelectColumn';
-  import {
-    isSearching,
-    SearchTerm,
-    fields,
-    cols,
-    seecol,
-    MoreField,
-  } from '../store';
-  import { selects } from '../selection';
+  import { isSearching, cols, MoreField } from '../store';
+
   function handleOnSubmit() {
     $isSearching = false;
     $MoreField = true;

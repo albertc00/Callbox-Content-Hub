@@ -10,7 +10,7 @@
   import Table from './Table.svelte';
   import { LightPaginationNav } from './pagination/index';
   import TableLoading from './TableLoading.svelte';
-  import { cols, pages, fieldID, category, colModal } from './store';
+  import { cols, pages, fieldID } from './store';
 
   import { onMount } from 'svelte';
   import ModalPrev from './modal/ModalPrev.svelte';

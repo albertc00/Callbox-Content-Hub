@@ -1,5 +1,4 @@
 <script>
-  import HomeButton from './HomeButton.svelte';
   import {
     isSearching,
     SearchTerm,

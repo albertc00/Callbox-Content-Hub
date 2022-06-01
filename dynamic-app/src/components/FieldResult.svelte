@@ -8,7 +8,6 @@
 
   import { useQuery } from '@sveltestack/svelte-query';
   import { SearchTerm, fields, cols, pages, fieldID } from './store';
-  import { col } from './SelectColumn';
   import { LightPaginationNav } from './pagination/index.js';
   import NoResult from './NoResult.svelte';
   import FieldResultLoading from './FieldResultLoading.svelte';
@@ -49,8 +48,6 @@
   $: isFetching = $queryResult.isFetching;
   $: isLoading = $queryResult.isLoading;
   $: isError = $queryResult.isError;
-
-  // res.flatMap(({ posts }) => posts).filter(({ id }) => ids.has(id) ? false : ids.add(id));
 
   import { onMount } from 'svelte';
   import PreviewFieldResult from './PreviewFieldResult.svelte';

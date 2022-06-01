@@ -1,6 +1,6 @@
 <script>
   import ViewResultLoading from './ViewResultLoading.svelte';
-  import { fieldID, SearchTerm, fields, pages } from './store.js';
+  import { fieldID, SearchTerm, pages } from './store.js';
   import { useQuery } from '@sveltestack/svelte-query';
 
   $: s = $SearchTerm.toLowerCase();

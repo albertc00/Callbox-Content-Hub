@@ -12,24 +12,18 @@
   </div>
 {:else}
   <div class="center">
-    <button class="cs_button" on:click={() => (show = true)}> Campaign </button>
+    <span>{text.map(({ label }) => label).join(', ')}</span>
   </div>
 {/if}
 
-<Modal title="Results" bind:show>
-  {#if selector === 'campaign'}
-    <div class="center">
-      {#each text as { label }}
-        <span>{label}</span><br />
-      {/each}
-    </div>
-  {:else if selector === 'results'}
+{#if selector === 'results'}
+  <Modal title="Results" bind:show>
     <div class="center">
       <table>
         <thead>
           <tr>
-            <th> Label </th>
-            <th> Value </th>
+            <th> KPI </th>
+            <th> # </th>
           </tr>
         </thead>
         <tbody>
@@ -46,8 +40,8 @@
         </tbody>
       </table>
     </div>
-  {/if}
-</Modal>
+  </Modal>
+{/if}
 
 <style>
   .cs_button {

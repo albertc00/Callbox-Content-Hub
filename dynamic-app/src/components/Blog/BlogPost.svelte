@@ -1,7 +1,7 @@
 <script>
   import BlogLoading from './BlogLoading.svelte';
   import { useQuery } from '@sveltestack/svelte-query';
-  import { fieldID, SearchTerm, pages } from '../store';
+  import { fieldID } from '../store';
 
   const url = `https://www.callboxinc.com/wp-json/wp/v2/posts`;
 

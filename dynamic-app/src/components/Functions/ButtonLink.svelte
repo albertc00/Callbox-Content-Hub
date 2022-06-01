@@ -17,12 +17,7 @@
 {#if selector === 'pdf'}
   <div class="center">
     <a class="cs_button" href={text} target="_blank">View PDF</a>
-    <button
-      title="helloword"
-      class="cs_button"
-      on:click={copy}
-      class:linkCopied={copied == true}
-    >
+    <button class="cs_button" on:click={copy} class:linkCopied={copied == true}>
       {#if !copied}
         Copy link
       {:else}

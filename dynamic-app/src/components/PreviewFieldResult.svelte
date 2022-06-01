@@ -1,6 +1,6 @@
 <script>
   import ViewResultLoading from './ViewResultLoading.svelte';
-  import { fieldID, SearchTerm, fields, pages } from './store.js';
+  import { fieldID, pages } from './store.js';
   import { useQuery } from '@sveltestack/svelte-query';
 
   $: page = $pages;
@@ -65,11 +65,7 @@
                 <header>
                   <h1 class="cs-title">{data.title.rendered}</h1>
                 </header>
-                <footer>
-                  <!-- <a class="pdf-button" href={post?.pdf}
-                                  >DOWNLOAD PDF</a
-                                > -->
-                </footer>
+                <footer />
               </div>
             </section>
             <div class="cs-results">
