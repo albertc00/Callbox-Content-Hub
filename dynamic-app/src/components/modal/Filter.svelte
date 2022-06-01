@@ -17,20 +17,20 @@
   }
 </script>
 
-<h2>Select Filter for Search</h2>
+<h2>Available</h2>
 <div class="dropdown">
   <ul class="checbox-filters">
     {#each selects as { n, id, label } (id)}
       <li class="check-svelte">
-        <div class="filters">
+        <label class="filters">
           <input
             class="checkbox-svelte"
             type="checkbox"
             bind:group={$fields}
             value={n}
           />
-          <label class="checkbox-label" for={id}> {label} </label>
-        </div>
+          <span class="checkbox-label" for={id}> {label} </span>
+        </label>
       </li>
     {/each}
   </ul>
@@ -45,12 +45,34 @@
     grid-template-columns: max-content 1fr;
     align-items: center;
     padding: 5px;
+    background-color: #f7f7f7;
+    border-radius: 0.25rem;
+  }
+  .check-svelte {
+    border: 1px solid #b1b1b1;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    color: #5f7380;
   }
 
+  h2 {
+    text-transform: uppercase;
+    font-family: 'Lato', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: #231f20;
+    margin: 0 0 0.5rem 0.5rem;
+  }
   .checbox-filters {
     display: grid;
+    gap: 1rem;
     grid-template-columns: repeat(2, 1fr);
     padding: 0;
+  }
+  .filters:hover,
+  .checkbox-label:hover {
+    cursor: pointer;
   }
   .checkbox-svelte {
     -webkit-appearance: none;

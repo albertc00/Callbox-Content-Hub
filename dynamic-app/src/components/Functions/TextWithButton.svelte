@@ -6,7 +6,7 @@
     $fieldID = value;
   }
 
-  export let tableheader = ['nani', 'nandato'];
+  // export let tableheader = ['nani', 'nandato'];
   export let selector = 'text';
   const text = selector.split('.').reduce((prev, curr) => prev[curr], post);
 </script>

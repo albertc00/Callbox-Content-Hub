@@ -11,15 +11,12 @@
   import { LightPaginationNav } from './pagination/index';
   import TableLoading from './TableLoading.svelte';
   import { cols, pages, fieldID, category, colModal } from './store';
-  import { col } from './SelectColumn';
 
-  import Modal, { bind } from './modal/index.js';
-  import { writable } from 'svelte/store';
+  import { onMount } from 'svelte';
+  import ModalPrev from './modal/ModalPrev.svelte';
   import ViewResult from './ViewResult.svelte';
-  import Popup from './modal/Popup.svelte';
-  const showModal = () => modal.set(bind(Popup));
-  const modal = writable(null);
-  const modals = writable(null);
+  import ShowHideCols from './modal/ShowHideCols.svelte';
+  import Modal from './modal/Modal.svelte';
 
   const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
 
@@ -44,9 +41,6 @@
   $: isError = $queryResult.isError;
   $: data = d?.data;
 
-  import { onMount } from 'svelte';
-  import ModalPrev from './modal/ModalPrev.svelte';
-
   let box;
   let yTop = 0;
   let yHeight;
@@ -62,95 +56,121 @@
 
   $: colDef = [
     {
+      id: 'title',
+      label: 'Title',
+      show: true,
       title: 'Title',
       headerComponent: Header,
       cellComponent: TextWithButton,
       cellAs: 'td',
-      hidden: !$cols.includes('title'),
       args: { selector: 'title' },
     },
     {
+      id: 'product',
+      label: 'Product or Service',
+      show: true,
       title: 'Product or Service',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('product'),
       args: { selector: 'product' },
     },
     {
+      id: 'targetLocation',
+      label: 'Target Location',
+      show: true,
       title: 'TARGET LOCATION',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('target-location'),
       args: { selector: 'targetLocation' },
     },
     {
+      id: 'pdf',
+      label: 'PDF',
+      show: true,
       title: 'PDF',
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      hidden: !$cols.includes('pdf'),
       args: { selector: 'pdf' },
     },
     {
+      id: 'webpage',
+      label: 'Webpage',
+      show: false,
       title: 'WEBPAGE',
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      hidden: !$cols.includes('link'),
       args: { selector: 'link' },
     },
     {
+      id: 'webpage_unlocked',
+      label: 'Webpage (Unlocked)',
+      show: false,
       title: 'WEBPAGE UNLOCKED',
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      hidden: !$cols.includes('linkUnlocked'),
       args: { selector: 'linkUnlocked' },
     },
-
     {
+      id: 'target_dm',
+      label: 'Target DM',
+      show: false,
       title: 'TARGET DM',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('target-dm'),
+
       args: { selector: 'targetDM' },
     },
     {
+      id: 'target_industry',
+      label: 'Target Industry',
+      show: false,
       title: 'TARGET INDUSTRY',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('target-industry'),
+
       args: { selector: 'targetIndustry' },
     },
     {
+      id: 'client_location',
+      label: 'Client Location',
+      show: false,
       title: 'CLIENT LOCATION',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('client-location'),
       args: { selector: 'clientLocation' },
     },
     {
+      id: 'client_HQ',
+      label: 'Client HQ',
+      show: false,
       title: 'CLIENT HQ',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('clientHQ'),
       args: { selector: 'clientHQ' },
     },
     {
+      id: 'campaign',
+      label: 'Campaign',
+      show: false,
       title: 'CAMPAIGN',
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      hidden: !$cols.includes('campaign'),
       args: { selector: 'campaign' },
     },
     {
+      id: 'results',
+      label: 'Results',
+      show: false,
       title: 'RESULTS',
       headerComponent: Header,
       cellComponent: TableFunc,
@@ -161,34 +181,50 @@
   ];
   let showAction = false;
 
-  const ddaText = 'Show actions';
+  const ddaText = 'Table actions';
   const ddaActions = [
     { text: 'Edit columns', id: 'EDIT_COLUMNS' },
     { text: 'Coming soon...', id: 'COMING_SOON_1' },
     { text: 'Coming soon...', id: 'COMING_SOON_2' },
   ];
+  let show = false;
 
   function handleDropdownAction({ text, id }) {
     console.log(`${id}: ${text}`);
 
     switch (id) {
       case 'EDIT_COLUMNS':
-        $colModal = true;
+        show = true;
         break;
       default:
         break;
     }
   }
+
+  let title = 'Choose which columns you see';
+  let printCols = 'nayeon';
+  function handleApply({ detail }) {
+    colDef = detail;
+    show = false;
+    printCols = JSON.stringify(colDef, null, 2);
+    console.log(printCols);
+  }
+
+  function handleClose({ detail }) {
+    show = false;
+  }
 </script>
 
 {#if $fieldID > 0}
   <ModalPrev modalContent={ViewResult} />
-  <!-- <Modal show={modal.set(bind(ViewResult))} />  -->
 {/if}
 
-{#if $colModal}
-  <ModalPrev modalContent={Popup} />
-{/if}
+<!-- <Modal show={$fieldID > 0}>
+  <ViewResult />
+</Modal> -->
+<Modal {title} bind:show>
+  <ShowHideCols cols={colDef} on:apply={handleApply} on:cancel={handleClose} />
+</Modal>
 
 <div class="top-wrapper">
   <div class="actionContainer">

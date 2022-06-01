@@ -1,13 +1,4 @@
 <script>
-  import { ELLIPSIS } from './pagination/symbolTypes.js';
-  import { validate_component } from 'svelte/internal';
-
-  import { cols, fieldID } from './store';
-
-  function onClick(value) {
-    $fieldID = value;
-  }
-
   export let data;
 
   export let colDef;
@@ -16,15 +7,21 @@
 
   // const ids = new Set();
   // res.flatMap(({ posts }) => posts).filter(({ id }) => ids.has(id) ? false : ids.add(id));
+
+  const mql = window.matchMedia('(min-width: 1281px)');
+  $: maxCols = mql.matches ? 6 : 4;
+  $: visible = colDef.filter(({ show }) => show);
+  $: colCount = visible.length;
+  $: excessCols = Math.max(colCount - maxCols, 0);
 </script>
 
 <div class="table-wrapper">
   <!-- {#each tableData as { posts, id } (id)} -->
-  <table>
+  <table style={`width: calc(98vw + (310px * ${excessCols}));`}>
     <thead>
       <tr bind:this={rowRef}>
-        {#each colDef as { title, headerComponent, hidden }, i}
-          {#if !hidden}
+        {#each colDef as { title, headerComponent, show }, i}
+          {#if show}
             <th>
               <svelte:component this={headerComponent} text={title} />
             </th>
@@ -36,8 +33,8 @@
     <tbody>
       {#each data as row}
         <tr>
-          {#each colDef as { cellComponent, hidden, args }}
-            {#if !hidden}
+          {#each colDef as { cellComponent, show, args }}
+            {#if show}
               <td>
                 <svelte:component this={cellComponent} post={row} {...args} />
               </td>
@@ -55,7 +52,7 @@
     overflow-x: scroll;
     width: 98vw;
     margin: 0 auto;
-    height: calc(52px * 9);
+    max-height: calc(60px * 9);
   }
 
   table {

@@ -2,40 +2,68 @@
   export let post;
   export let selector = 'text';
   const text = selector.split('.').reduce((prev, curr) => prev[curr], post);
+  let show = false;
+  import Modal from '../modal/Modal.svelte';
 </script>
 
-{#if selector === 'campaign'}
-  <div class="center">
-    {#each text as { label }}
-      <span>{label}</span><br />
-    {/each}
-  </div>
-{:else if selector === 'results'}
-  <div class="center">
-    <table>
-      <thead>
-        <tr>
-          <th> Label </th>
-          <th> Value </th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each text as { label, value }}
+<div class="center">
+  <button class="cs_button" on:click={() => (show = true)}> Results </button>
+</div>
+
+<Modal title="Results" bind:show>
+  {#if selector === 'campaign'}
+    <div class="center">
+      {#each text as { label }}
+        <span>{label}</span><br />
+      {/each}
+    </div>
+  {:else if selector === 'results'}
+    <div class="center">
+      <table>
+        <thead>
           <tr>
-            <td>
-              {label}
-            </td>
-            <td>
-              {value}
-            </td>
+            <th> Label </th>
+            <th> Value </th>
           </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
-{/if}
+        </thead>
+        <tbody>
+          {#each text as { label, value }}
+            <tr>
+              <td>
+                {label}
+              </td>
+              <td>
+                {value}
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {/if}
+</Modal>
 
 <style>
+  .cs_button {
+    /* margin: 10px; */
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid #014e89;
+    color: #014e89;
+    border-radius: 0.25rem;
+    padding: 0.525rem 1.05rem;
+    background-color: transparent;
+    font-weight: 600;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    text-decoration: none;
+  }
+
+  .cs_button:hover {
+    text-decoration: none;
+    background-color: #014e89;
+    color: #fff;
+  }
   .center {
     text-align: center;
   }

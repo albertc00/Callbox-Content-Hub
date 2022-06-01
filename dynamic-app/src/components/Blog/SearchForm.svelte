@@ -5,27 +5,10 @@
     $isSearching = true;
     $fields = $fields;
   }
-
-  import Modal, { bind } from '../modal/index.js';
-  import { writable } from 'svelte/store';
-  import Filter from '../modal/Filter.svelte';
-  const modal = writable(null);
-  const showModal = () => modal.set(bind(Filter));
 </script>
 
 <div class="wrapper-spacer" />
 <div class="wrapper-bar">
-  <!-- <Modal show={$modal}>
-    <button class="menubar" on:click={showModal} aria-label="Start search">
-      <div class="menubarlabel">
-        <svg xmlns="http://www.w3.org/2000/svg" height="40" width="40"
-          ><path
-            d="M17.75 28.917V27.917H22.25V28.917ZM6.083 10.417V9.417H33.917V10.417ZM11.083 19.667V18.667H28.917V19.667Z"
-          /></svg
-        ><span class="menulabel">Filters</span>
-      </div>
-    </button>
-  </Modal> -->
   <div class="wrapper-spacer" />
   <form class="form" on:submit|preventDefault={handleOnSubmit}>
     <div class="wrapper svelte-iqmikt">

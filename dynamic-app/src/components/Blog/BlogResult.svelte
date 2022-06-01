@@ -9,13 +9,7 @@
   import { LightPaginationNav } from '../pagination/index';
   import TableLoading from './TableLoading.svelte';
   import { useQuery } from '@sveltestack/svelte-query';
-
-  import Modal, { bind } from '../modal/index';
-  import { writable } from 'svelte/store';
-  import BlogPost from './BlogPost.svelte';
-  import Popup from '../modal/Popup.svelte';
-  const showModal = () => modals.set(bind(Popup));
-  const modals = writable(null);
+  import ModalPrev from '../modal/ModalPrev.svelte';
 
   const url = `https://www.callboxinc.com/wp-json/wp/v2/posts`;
 
@@ -46,10 +40,9 @@
   $: isError = $queryResult.isError;
   $: data = d?.data;
   $: totalPage = d?.totalPage;
-  $: console.log(data);
-
   import { onMount } from 'svelte';
   import SearchForm from './SearchForm.svelte';
+  import BlogPost from './BlogPost.svelte';
   let box;
   let yTop = 0;
 
@@ -65,7 +58,7 @@
       headerComponent: Header,
       cellComponent: TextWithButton,
       cellAs: 'td',
-      hidden: false,
+      show: true,
       args: { selector: 'title.rendered' },
     },
     {
@@ -73,7 +66,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      show: true,
       args: { selector: 'status' },
     },
     {
@@ -81,7 +74,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: false,
+      show: true,
       args: { selector: 'excerpt.rendered' },
     },
     {
@@ -89,7 +82,7 @@
       headerComponent: Header,
       cellComponent: FeaturedImage,
       cellAs: 'td',
-      hidden: false,
+      show: true,
       args: { selector: 'slug' },
     },
   ];
@@ -97,23 +90,8 @@
 
 <SearchForm />
 {#if $fieldID > 0}
-  <Modal show={modals.set(bind(BlogPost))} />
+  <ModalPrev modalContent={BlogPost} />
 {/if}
-<Modal show={$modals}>
-  <button class="modal-button" style="display:none" on:click={showModal}>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="#014e89"
-      height="30"
-      width="35"
-      viewBox="-5 7 55 35"
-      ><path
-        d="M9 39H11.2L35.45 14.75L34.35 13.65L33.25 12.55L9 36.8ZM6 42V35.6L35.4 6.2Q36.25 5.35 37.525 5.375Q38.8 5.4 39.65 6.25L41.8 8.4Q42.65 9.25 42.65 10.5Q42.65 11.75 41.8 12.6L12.4 42ZM39.5 10.45 37.45 8.4ZM35.45 14.75 34.35 13.65 33.25 12.55 35.45 14.75Z"
-      /></svg
-    >
-    <span class="modal-text">Edit Columns</span>
-  </button>
-</Modal>
 
 <div class="cntnr">
   <div class="results svelte-fhxlyi">
@@ -158,9 +136,6 @@
 </div>
 
 <style>
-  /* .loading {
-    padding-top: 20px;
-  } */
   .table-label {
     position: absolute;
     top: 5.5rem;
@@ -169,18 +144,19 @@
     font-weight: 650;
     font-size: 2rem;
   }
+
   .table-container {
     overflow: auto;
     width: 100%;
     margin: auto;
   }
 
-  .table-wrapper {
+  /* .table-wrapper {
     overflow: scroll;
     width: 95vw;
-    max-height: 73vh;
+    max-height: 69vh;
     margin: 0 auto;
-  }
+  } */
 
   .cntnr {
     padding-top: 20px;

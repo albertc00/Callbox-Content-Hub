@@ -6,25 +6,23 @@
     $fields = $fields;
   }
 
-  import Modal, { bind } from './modal/index.js';
-  import { writable } from 'svelte/store';
   import Filter from './modal/Filter.svelte';
-  const modal = writable(null);
-  const showModal = () => modal.set(bind(Filter));
+  import Modal from './modal/Modal.svelte';
+
+  let show = false;
 </script>
 
 <div class="wrapper-spacer" />
 <div class="wrapper-bar">
-  <Modal show={$modal}>
-    <button class="menubar" on:click={showModal} aria-label="Start search">
-      <div class="menubarlabel">
-        <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48"
-          ><path
-            d="M20 36V33H28V36ZM6 15V12H42V15ZM12 25.5V22.5H36V25.5Z"
-          /></svg
-        ><span class="menulabel">Filters</span>
-      </div>
-    </button>
+  <button class="menubar" on:click={() => (show = true)}>
+    <div class="menubarlabel">
+      <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48"
+        ><path d="M20 36V33H28V36ZM6 15V12H42V15ZM12 25.5V22.5H36V25.5Z" /></svg
+      ><span class="menulabel">Filters</span>
+    </div>
+  </button>
+  <Modal title={'Select Filter'} bind:show>
+    <Filter />
   </Modal>
 
   <form class="form" on:submit|preventDefault={handleOnSubmit}>
@@ -59,24 +57,6 @@
         ></button
       >
     </div>
-    <!-- dropdown -->
-
-    <!-- <div class="dropdown">
-      <ul class="checbox-filters">
-        {#each selects as { n, id, label } (id)}
-          <li class="check-svelte">
-            <input
-              class="checkbox-svelte"
-              type="checkbox"
-              bind:group={$fields}
-              value={n}
-            />
-            <label class="checkbox-label" for={id}> {label} </label>
-          </li>
-        {/each}
-      </ul>
-    </div> -->
-    <!-- dropdown -->
   </form>
 </div>
 

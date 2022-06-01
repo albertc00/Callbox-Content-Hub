@@ -14,9 +14,4 @@
   .center {
     text-align: center;
   }
-  /* .text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  } */
 </style>

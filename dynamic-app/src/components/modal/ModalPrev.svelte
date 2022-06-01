@@ -1,5 +1,5 @@
 <script>
-  import { fieldID, colModal } from '../store';
+  import { fieldID, colModal, category } from '../store';
 
   export let modalContent;
   function close() {
@@ -9,7 +9,7 @@
 </script>
 
 <div on:click|self class="modal">
-  <div class="content" class:smallModal={$colModal == true}>
+  <div class="content">
     <button on:click={close}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" height="48" width="48"
         ><path
@@ -54,14 +54,5 @@
 
   .content button:hover {
     cursor: pointer;
-  }
-
-  .smallModal svg {
-    fill: #3b3b3b;
-  }
-  .content.smallModal {
-    width: 40rem;
-    padding: 2rem;
-    height: 20rem;
   }
 </style>

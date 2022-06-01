@@ -4,30 +4,25 @@
   import Header from './Functions/Header.svelte';
   import ButtonLink from './Functions/ButtonLink.svelte';
   import TableFunc from './Functions/TableFunc.svelte';
+  import Table from './Table.svelte';
 
-  import Selection from './Selection.svelte';
   import { useQuery } from '@sveltestack/svelte-query';
-  import { SearchTerm, selection, fields, cols, pages, fieldID } from './store';
+  import { SearchTerm, fields, cols, pages, fieldID } from './store';
   import { col } from './SelectColumn';
   import { LightPaginationNav } from './pagination/index.js';
   import NoResult from './NoResult.svelte';
   import FieldResultLoading from './FieldResultLoading.svelte';
-  import Skeleton from 'svelte-skeleton/Skeleton.svelte';
 
-  import Modal, { bind } from './modal/index.js';
-  import { writable } from 'svelte/store';
-  import ViewResult from './ViewResult.svelte';
-  import Popup from './modal/Popup.svelte';
-  import Table from './Table.svelte';
-  const showModal = () => modal.set(bind(Popup));
-  const modal = writable(null);
+  import DropdownActions from './DropdownActions.svelte';
+  import ShowHideCols from './modal/ShowHideCols.svelte';
+  import Modal from './modal/Modal.svelte';
 
   $: s = $SearchTerm.toLowerCase();
   $: page = $pages;
   $: field = $fields.join(',');
 
   const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
-  async function fetchPosts(page = 1, s, field) {
+  async function fetchPosts(page, s, field) {
     const res = await fetch(
       `${url}?s=${s}&page=${page}&per_page=9&fields=${field}`
     );
@@ -54,10 +49,12 @@
   $: isFetching = $queryResult.isFetching;
   $: isLoading = $queryResult.isLoading;
   $: isError = $queryResult.isError;
-  $: console.log(data);
+
   // res.flatMap(({ posts }) => posts).filter(({ id }) => ids.has(id) ? false : ids.add(id));
 
   import { onMount } from 'svelte';
+  import PreviewFieldResult from './PreviewFieldResult.svelte';
+  import ModalPrev from './modal/ModalPrev.svelte';
 
   let box;
   let yTop = 0;
@@ -74,94 +71,121 @@
 
   $: colDef = [
     {
+      id: 'title',
+      label: 'Title',
+      show: true,
       title: 'Title',
       headerComponent: Header,
       cellComponent: TextWithButton,
       cellAs: 'td',
-      hidden: !$cols.includes('title'),
       args: { selector: 'title' },
     },
     {
+      id: 'product',
+      label: 'Product or Service',
+      show: true,
       title: 'Product or Service',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('product'),
       args: { selector: 'product' },
     },
     {
-      title: 'PDF',
-      headerComponent: Header,
-      cellComponent: ButtonLink,
-      cellAs: 'td',
-      hidden: !$cols.includes('pdf'),
-      args: { selector: 'pdf' },
-    },
-    {
-      title: 'WEBPAGE',
-      headerComponent: Header,
-      cellComponent: ButtonLink,
-      cellAs: 'td',
-      hidden: !$cols.includes('link'),
-      args: { selector: 'link' },
-    },
-    {
-      title: 'WEBPAGE UNLOCKED',
-      headerComponent: Header,
-      cellComponent: ButtonLink,
-      cellAs: 'td',
-      hidden: !$cols.includes('linkUnlocked'),
-      args: { selector: 'linkUnlocked' },
-    },
-    {
+      id: 'targetLocation',
+      label: 'Target Location',
+      show: true,
       title: 'TARGET LOCATION',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('target-location'),
       args: { selector: 'targetLocation' },
     },
     {
+      id: 'pdf',
+      label: 'PDF',
+      show: true,
+      title: 'PDF',
+      headerComponent: Header,
+      cellComponent: ButtonLink,
+      cellAs: 'td',
+      args: { selector: 'pdf' },
+    },
+    {
+      id: 'webpage',
+      label: 'Webpage',
+      show: false,
+      title: 'WEBPAGE',
+      headerComponent: Header,
+      cellComponent: ButtonLink,
+      cellAs: 'td',
+      args: { selector: 'link' },
+    },
+    {
+      id: 'webpage_unlocked',
+      label: 'Webpage (Unlocked)',
+      show: false,
+      title: 'WEBPAGE UNLOCKED',
+      headerComponent: Header,
+      cellComponent: ButtonLink,
+      cellAs: 'td',
+      args: { selector: 'linkUnlocked' },
+    },
+    {
+      id: 'target_dm',
+      label: 'Target DM',
+      show: false,
       title: 'TARGET DM',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('target-dm'),
+
       args: { selector: 'targetDM' },
     },
     {
+      id: 'target_industry',
+      label: 'Target Industry',
+      show: false,
       title: 'TARGET INDUSTRY',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('target-industry'),
+
       args: { selector: 'targetIndustry' },
     },
     {
+      id: 'client_location',
+      label: 'Client Location',
+      show: false,
       title: 'CLIENT LOCATION',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('client-location'),
       args: { selector: 'clientLocation' },
     },
     {
+      id: 'client_HQ',
+      label: 'Client HQ',
+      show: false,
       title: 'CLIENT HQ',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      hidden: !$cols.includes('clientHQ'),
       args: { selector: 'clientHQ' },
     },
     {
+      id: 'campaign',
+      label: 'Campaign',
+      show: false,
       title: 'CAMPAIGN',
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      hidden: !$cols.includes('campaign'),
       args: { selector: 'campaign' },
     },
     {
+      id: 'results',
+      label: 'Results',
+      show: false,
       title: 'RESULTS',
       headerComponent: Header,
       cellComponent: TableFunc,
@@ -170,6 +194,40 @@
       args: { selector: 'results' },
     },
   ];
+  let showAction = false;
+
+  const ddaText = 'Table actions';
+  const ddaActions = [
+    { text: 'Edit columns', id: 'EDIT_COLUMNS' },
+    { text: 'Coming soon...', id: 'COMING_SOON_1' },
+    { text: 'Coming soon...', id: 'COMING_SOON_2' },
+  ];
+  let show = false;
+
+  function handleDropdownAction({ text, id }) {
+    console.log(`${id}: ${text}`);
+
+    switch (id) {
+      case 'EDIT_COLUMNS':
+        show = true;
+        break;
+      default:
+        break;
+    }
+  }
+
+  let title = 'Choose which columns you see';
+  let printCols = 'nayeon';
+  function handleApply({ detail }) {
+    colDef = detail;
+    show = false;
+    printCols = JSON.stringify(colDef, null, 2);
+    console.log(printCols);
+  }
+
+  function handleClose({ detail }) {
+    show = false;
+  }
 </script>
 
 <svelte:head>
@@ -181,26 +239,25 @@
   />
 </svelte:head>
 
-<!-- backup fect function-->
-<!-- const res = await fetch(
-  `${url}?s=${s}&page=${page}&per_page=10&fields=${field.join(',')}`
-);
-
-const data = await res.json();
-
-return data; -->
-
-<!-- <SearchFormClose /> -->
 {#if $fieldID > 0}
-  <Modal show={modal.set(bind(ViewResult))} />
+  <ModalPrev modalContent={PreviewFieldResult} />
 {/if}
+
+<Modal {title} bind:show>
+  <ShowHideCols cols={colDef} on:apply={handleApply} on:cancel={handleClose} />
+</Modal>
+
 <div class="top-wrapper">
+  <div class="actionContainer">
+    <DropdownActions
+      text={ddaText}
+      actions={ddaActions}
+      onAction={handleDropdownAction}
+    />
+  </div>
   <div class="modal-wrapper">
-    <!-- <div class="modal">
-      <Selection />
-    </div> -->
     <div class="dropdwn-selection">
-      <Modal show={$modal}>
+      <!-- <Modal show={$modal}>
         <button class="modal-button" on:click={showModal}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -214,7 +271,7 @@ return data; -->
           >
           <span class="modal-text">Edit Columns</span>
         </button>
-      </Modal>
+      </Modal> -->
     </div>
   </div>
   <!-- 
@@ -236,7 +293,9 @@ return data; -->
         <span>Error</span>
       {:else if data?.length}
         <h2 class="table-label">Case Studies</h2>
-        <h2 class="table-sublabel">By {data.label}</h2>
+        <!-- {#each $queryResult.data as hello}
+        <h2 class="table-sublabe">By {hello.label}</h2> 
+        {/each} -->
 
         <div class="table-container">
           <div
@@ -251,17 +310,16 @@ return data; -->
             <!-- table helloworld -->
           </div>
         </div>
-        {#if $selection > 0}
-          <div class="area-2">
-            <LightPaginationNav
-              totalItems={data?.total}
-              pageSize={9}
-              currentPage={$pages}
-              limit={1}
-              on:setPage={(e) => ($pages = e.detail.page)}
-            />
-          </div>
-        {/if}
+
+        <div class="area-2">
+          <LightPaginationNav
+            totalItems={data?.length}
+            pageSize={5}
+            currentPage={$pages}
+            limit={1}
+            on:setPage={(e) => ($pages = e.detail.page)}
+          />
+        </div>
       {:else}
         <NoResult />
       {/if}
@@ -272,6 +330,13 @@ return data; -->
 <!-- </Query>
 </div> -->
 <style>
+  .actionContainer {
+    padding: 1rem 0;
+    display: flex;
+    justify-content: right;
+    width: 98vw;
+    margin: 0 auto;
+  }
   .top-wrapper {
     background-color: #f7f7f7;
   }
@@ -287,33 +352,6 @@ return data; -->
     font-weight: 650;
     font-size: 2rem;
   }
-  .table-sublabel {
-    position: absolute;
-    top: -3.5rem;
-    left: 3rem;
-    font-family: 'open Sans', sans-serif;
-    font-weight: 550;
-    font-size: 1.1rem;
-  }
-  .modal {
-    padding: 8px;
-    padding-left: 53rem;
-    padding-top: 5px;
-  }
-
-  .modal-button {
-    display: grid;
-    grid-template-columns: 0.4fr 1fr;
-    padding-top: 20px;
-    align-items: center;
-  }
-  .modal-text {
-    color: #014e89;
-    font-family: 'open Sans', sans-serif;
-    font-weight: 650;
-    font-size: 1rem;
-    text-transform: capitalize;
-  }
 
   .area-2 {
     grid-column-start: 2;
@@ -324,35 +362,16 @@ return data; -->
   }
 
   .table-container {
-    overflow: auto;
     width: 100%;
     margin: auto;
   }
 
   .table-wrapper {
-    overflow: scroll;
     width: 95vw;
     max-height: 68vh;
     margin: 0 auto;
   }
 
-  button.modal-button {
-    background-color: #ffca09;
-    border: 1px solid #ffca09;
-    border-radius: 0.25rem;
-    color: #004b84;
-    font-weight: 600;
-    letter-spacing: 0.0375rem;
-    line-height: unset;
-    padding: 0.3rem 0.6rem;
-    transition: all 0.3s;
-    text-transform: uppercase;
-  }
-
-  button.modal-button:hover {
-    background-color: unset;
-    cursor: pointer;
-  }
   .modal-wrapper {
     /* padding-top: 20px; */
     padding-bottom: 10px;

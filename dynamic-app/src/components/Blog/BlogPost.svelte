@@ -1,85 +1,66 @@
 <script>
   import BlogLoading from './BlogLoading.svelte';
-  import { Query } from '@sveltestack/svelte-query';
+  import { useQuery } from '@sveltestack/svelte-query';
   import { fieldID, SearchTerm, pages } from '../store';
 
   const url = `https://www.callboxinc.com/wp-json/wp/v2/posts`;
 
-  let perPage = 10;
-  $: s = $SearchTerm.toLowerCase();
+  async function fetchPosts($fieldID) {
+    const res = await fetch(`${url}/${$fieldID}?_embed`);
 
-  async function fetchPosts({ s, $pages, perPage = 10 }) {
-    if ($SearchTerm.length == 0) {
-      const res = await fetch(
-        `${url}?_embed&per_page=${perPage}&page=${$pages}`
-      );
+    const data = await res.json();
 
-      const data = await res.json();
-
-      return data;
-    } else {
-      const res = await fetch(
-        `${url}?_embed&search=${s}&per_page=${perPage}&page=${$pages}`
-      );
-
-      const data = await res.json();
-
-      return data;
-    }
+    return { data };
   }
 
-  $: queryOptions = {
-    queryKey: ['seeMore', s, $pages, perPage],
-    queryFn: () => fetchPosts({ s, $pages, perPage }),
-    enabled: $SearchTerm !== '' || $SearchTerm === '',
+  $: queryResult = useQuery(['posts', $fieldID], () => fetchPosts($fieldID), {
     keepPreviousData: true,
     cacheTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
-  };
+  });
+
+  $: d = $queryResult.data;
+  $: isFetching = $queryResult.isFetching;
+  $: isLoading = $queryResult.isLoading;
+  $: isError = $queryResult.isError;
+  $: data = d?.data;
+  $: console.log(data);
 </script>
 
-<Query options={queryOptions}>
-  <div slot="query" let:queryResult={{ data, isFetching, isError }}>
-    {#if isFetching}
-      <BlogLoading />
-    {:else if isError}
-      <span>Error</span>
-    {:else}
-      <div class="container">
-        <main>
-          {#each data as post (post.id)}
-            {#if post.id == $fieldID}
-              <article>
-                <header class="entry-header">
-                  <div class="entry-title">
-                    <h1>{post.title.rendered}</h1>
-                    <div class="entry-author">
-                      Written by
-                      <a href="https://www.callboxinc.com/author/meldoyr/"
-                        >{post._embedded['author']['0'].name}</a
-                      >
-                    </div>
-                  </div>
+{#if isFetching}
+  <BlogLoading />
+{:else if isError}
+  <span>Error</span>
+{:else}
+  <div class="container">
+    <main>
+      <article>
+        <header class="entry-header">
+          <div class="entry-title">
+            <h1>{data.title.rendered}</h1>
+            <div class="entry-author">
+              Written by
+              <a href="https://www.callboxinc.com/author/meldoyr/"
+                >{data._embedded['author']['0'].name}</a
+              >
+            </div>
+          </div>
 
-                  <img
-                    class="wp-post-img"
-                    src={post._embedded['wp:featuredmedia']['0'].link}
-                    alt={post.slug}
-                    width="800"
-                    height="450"
-                  />
-                </header>
-                <div class="entry-content">
-                  <p>{@html post.content.rendered}</p>
-                </div>
-              </article>
-            {/if}
-          {/each}
-        </main>
-      </div>
-    {/if}
+          <img
+            class="wp-post-img"
+            src={data._embedded['wp:featuredmedia']['0'].link}
+            alt={data.slug}
+            width="800"
+            height="450"
+          />
+        </header>
+        <div class="entry-content">
+          <p>{@html data.content.rendered}</p>
+        </div>
+      </article>
+    </main>
   </div>
-</Query>
+{/if}
 
 <style>
   article {
@@ -99,6 +80,8 @@
     padding-bottom: 5rem;
     padding-right: calc(1280px / 12);
     padding-left: calc(1280px / 12);
+    background-color: #fff;
+    border-radius: 10px;
   }
   .wp-post-img {
     width: 100%;

@@ -10,7 +10,6 @@
   import UserAccount from './UserAccount.svelte';
   import BlogResult from './Blog/BlogResult.svelte';
   import BlogSearchResult from './Blog/BlogSearchResult.svelte';
-  import ViewResult from './ViewResult.svelte';
 
   const queryClient = new QueryClient();
 </script>

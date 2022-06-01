@@ -6,17 +6,16 @@
   $: s = $SearchTerm.toLowerCase();
 
   $: page = $pages;
-  $: field = $fields;
   const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
-  async function fetchPosts(page) {
-    const res = await fetch(`${url}?page=${page}&per_page=9`);
+  async function fetchPosts(s, page) {
+    const res = await fetch(`${url}?s=${s}&page=${page}&per_page=9&fields=-1`);
 
     const data = await res.json();
 
     return { data };
   }
 
-  $: queryResult = useQuery(['posts', page], () => fetchPosts(page), {
+  $: queryResult = useQuery(['posts', s, page], () => fetchPosts(s, page), {
     keepPreviousData: true,
     cacheTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
@@ -26,13 +25,14 @@
   $: isFetching = $queryResult.isFetching;
   $: isLoading = $queryResult.isLoading;
   $: isError = $queryResult.isError;
-  $: data = d?.data;
+  $: data = d?.data[0];
+  $: console.log(data);
 </script>
 
 <!-- <SearchFormClose /> -->
 <div class="wrapper">
   <!-- <Query options={queryOptions}>
-    <div slot="query" let:queryResult={{ data, isFetching, isError }}> -->
+      <div slot="query" let:queryResult={{ data, isFetching, isError }}> -->
   <div class="results svelte-fhxlyi">
     {#if isFetching}
       <ViewResultLoading />
@@ -64,8 +64,8 @@
                     </header>
                     <footer>
                       <!-- <a class="pdf-button" href={post?.pdf}
-                              >DOWNLOAD PDF</a
-                            > -->
+                                >DOWNLOAD PDF</a
+                              > -->
                     </footer>
                   </div>
                 </section>
@@ -141,8 +141,8 @@
                     {@html post.content}
                   </div>
                   <!-- <div class="btn-btm">
-                        <a class="pdf-button" href={post.pdf}>DOWNLOAD PDF</a>
-                      </div> -->
+                          <a class="pdf-button" href={post.pdf}>DOWNLOAD PDF</a>
+                        </div> -->
                 </div>
               </article>
             </div>
@@ -154,7 +154,7 @@
 </div>
 
 <!-- </Query>
-</div> -->
+  </div> -->
 <style>
   .cs-content {
     font-size: 1rem;

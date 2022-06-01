@@ -54,12 +54,7 @@
     width: 100%;
     position: initial;
   }
-  .entry-author {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    font-family: 'Work Sans', sans-serif;
-    color: #f5f4f4;
-  }
+
   .container {
     padding-top: 5rem;
     padding-bottom: 5rem;
