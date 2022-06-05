@@ -1,6 +1,12 @@
 <script>
   import { fade, fly } from 'svelte/transition';
-  import { createEventDispatcher } from 'svelte';
+
+  import {
+    createEventDispatcher,
+    beforeUpdate,
+    afterUpdate,
+    onMount,
+  } from 'svelte';
 
   const dispatch = createEventDispatcher();
 
@@ -27,14 +33,38 @@
     show = false;
     dispatch('close');
   }
+
+  let modalRef;
+  let scroll = false;
+
+  beforeUpdate(() => {
+    // if (modalRef) {
+    //   const vh = window.innerHeight;
+    //   const marginTop = vh * 0.15;
+    //   const modalHeight = modalRef.offsetHeight + marginTop;
+    //   scroll = modalHeight > vh;
+    //   console.log(scroll);
+    // }
+  });
+
+  afterUpdate(() => {
+    if (modalRef) {
+      const vh = window.innerHeight;
+      const marginTop = vh * 0.15;
+      const modalHeight = modalRef.offsetHeight + marginTop;
+      scroll = modalHeight > vh;
+      console.log(scroll);
+    }
+  });
 </script>
 
 {#if show}
-  <div class="modal-bg">
+  <div class="modal-bg" class:scroll>
     <div
       role="dialog"
       class="modal"
       use:clickOutside
+      bind:this={modalRef}
       on:clickOutside={handleClose}
       transition:fly={{ y: 50 }}
     >
@@ -70,6 +100,10 @@
     top: 0;
     left: 0;
     z-index: 9999;
+  }
+
+  .modal-bg.scroll {
+    overflow-y: scroll;
   }
 
   .modal {

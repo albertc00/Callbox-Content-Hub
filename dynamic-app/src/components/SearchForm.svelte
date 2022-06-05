@@ -16,7 +16,11 @@
 <div class="wrapper-bar">
   <button class="menubar" on:click={() => (show = true)}>
     <div class="menubarlabel">
-      <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48"
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="#d2d2d2"
+        height="48"
+        width="48"
         ><path d="M20 36V33H28V36ZM6 15V12H42V15ZM12 25.5V22.5H36V25.5Z" /></svg
       ><span class="menulabel">Filters</span>
     </div>

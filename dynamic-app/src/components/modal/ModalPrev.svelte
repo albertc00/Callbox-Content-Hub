@@ -1,14 +1,14 @@
 <script>
-  import { fieldID, colModal, category } from '../store';
+  import { fade, fly } from 'svelte/transition';
+  import { fieldID } from '../store';
 
   export let modalContent;
   function close() {
     $fieldID = 0;
-    $colModal = false;
   }
 </script>
 
-<div on:click|self class="modal">
+<div on:click|self class="modal" transition:fly={{ y: 50 }}>
   <div class="content">
     <button on:click={close}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" height="48" width="48"

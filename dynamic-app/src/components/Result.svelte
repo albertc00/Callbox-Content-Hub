@@ -1,10 +1,14 @@
 <script>
-  import TextWithButton from './Functions/TextWithButton.svelte';
+  // import TextWithButton from './Functions/TextWithButton.svelte';
+  import Title from './Title.svelte';
+
   import Textonly from './Functions/Textonly.svelte';
   import Header from './Functions/Header.svelte';
   import ButtonLink from './Functions/ButtonLink.svelte';
   import TableFunc from './Functions/TableFunc.svelte';
   import DropdownActions from './DropdownActions.svelte';
+  import CompanyImage from './Functions/CompanyImage.svelte';
+  import Hyperlink from './Functions/Hyperlink.svelte';
 
   import { useQuery } from '@sveltestack/svelte-query';
   import Table from './Table.svelte';
@@ -18,15 +22,17 @@
   import ShowHideCols from './modal/ShowHideCols.svelte';
   import Modal from './modal/Modal.svelte';
 
-  const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
+  const url = `https://www.callboxinc.com/wp-json/wp/v2/pages`;
 
   $: page = $pages;
   async function fetchPosts(page) {
-    const res = await fetch(`${url}?page=${page}&per_page=9`);
+    const res = await fetch(`${url}?_embed&tags=1220&page=${page}&per_page=9`);
+
+    const totalPage = res.headers.get('x-wp-totalpages');
 
     const data = await res.json();
 
-    return { data };
+    return { data, totalPage };
   }
 
   $: queryResult = useQuery(['posts', page], () => fetchPosts(page), {
@@ -39,6 +45,7 @@
   $: isFetching = $queryResult.isFetching;
   $: isLoading = $queryResult.isLoading;
   $: isError = $queryResult.isError;
+  $: totalPage = d?.totalPage;
   $: data = d?.data;
 
   let box;
@@ -61,9 +68,8 @@
       show: true,
       title: 'Title',
       headerComponent: Header,
-      cellComponent: TextWithButton,
+      cellComponent: Title,
       cellAs: 'td',
-      args: { selector: 'title' },
     },
     {
       id: 'product',
@@ -73,7 +79,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'product' },
+      args: { selector: 'acf.cs_client_industry' },
     },
     {
       id: 'targetLocation',
@@ -83,7 +89,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'targetLocation' },
+      args: { selector: 'acf.cs_target_location' },
     },
     {
       id: 'pdf',
@@ -93,7 +99,7 @@
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      args: { selector: 'pdf' },
+      args: { selector: 'acf.cb_asset' },
     },
     {
       id: 'webpage',
@@ -113,7 +119,7 @@
       headerComponent: Header,
       cellComponent: ButtonLink,
       cellAs: 'td',
-      args: { selector: 'linkUnlocked' },
+      args: { selector: 'link' },
     },
     {
       id: 'target_dm',
@@ -124,7 +130,7 @@
       cellComponent: Textonly,
       cellAs: 'td',
 
-      args: { selector: 'targetDM' },
+      args: { selector: 'acf.cs_target_dm' },
     },
     {
       id: 'target_industry',
@@ -135,7 +141,7 @@
       cellComponent: Textonly,
       cellAs: 'td',
 
-      args: { selector: 'targetIndustry' },
+      args: { selector: 'acf.cs_target_industry' },
     },
     {
       id: 'client_location',
@@ -145,7 +151,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'clientLocation' },
+      args: { selector: 'acf.cs_client_location' },
     },
     {
       id: 'client_HQ',
@@ -155,7 +161,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'clientHQ' },
+      args: { selector: 'acf.cs_client_hq' },
     },
     {
       id: 'campaign',
@@ -165,7 +171,7 @@
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      args: { selector: 'campaign' },
+      args: { selector: 'acf.cs_campaign_types' },
     },
     {
       id: 'results',
@@ -175,8 +181,31 @@
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      hidden: !$cols.includes('results'),
-      args: { selector: 'results' },
+      args: { selector: 'acf.cs_results' },
+    },
+    {
+      id: 'client',
+      label: 'Client',
+      show: false,
+      title: 'Client',
+      headerComponent: Header,
+      cellComponent: Hyperlink,
+      cellAs: 'td',
+      args: {
+        texts: 'acf.cs_client.name',
+        links: 'acf.cs_client.website',
+        as: 'p',
+      },
+    },
+    {
+      id: 'clientLob',
+      label: 'Client LOB',
+      show: false,
+      title: 'Client LOB',
+      headerComponent: Header,
+      cellComponent: Textonly,
+      cellAs: 'td',
+      args: { selector: 'acf.cs_client.lob' },
     },
   ];
   let showAction = false;
@@ -215,9 +244,9 @@
   }
 </script>
 
-{#if $fieldID > 0}
+<!-- {#if $fieldID > 0}
   <ModalPrev modalContent={ViewResult} />
-{/if}
+{/if} -->
 
 <!-- <Modal show={$fieldID > 0}>
   <ViewResult />
@@ -258,13 +287,13 @@
         <h2 class="table-label">Case Studies</h2>
         <div class="table-container">
           <!-- this is table -->
-          <Table data={data?.posts} {colDef} />
+          <Table {data} {colDef} />
           <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
         </div>
 
         <div class="area-2">
           <LightPaginationNav
-            totalItems={data?.total}
+            totalItems={totalPage}
             pageSize={9}
             currentPage={$pages}
             limit={1}

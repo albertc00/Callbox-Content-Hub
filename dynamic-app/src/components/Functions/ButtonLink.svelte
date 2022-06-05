@@ -14,7 +14,7 @@
   };
 </script>
 
-{#if selector === 'pdf'}
+{#if selector === 'acf.cb_asset'}
   <div class="center">
     <a class="cs_button" href={text} target="_blank">View PDF</a>
     <button class="cs_button" on:click={copy} class:linkCopied={copied == true}>
@@ -31,7 +31,9 @@
   </div>
 {:else if selector === 'linkUnlocked'}
   <div class="center">
-    <a class="cs_button" href={text} target="_blank">See Full Web page</a>
+    <a class="cs_button" href={`${text}?user=benb`} target="_blank"
+      >See Full Web page</a
+    >
   </div>
 {/if}
 
@@ -52,7 +54,7 @@
     border: 1px solid #014e89;
     color: #014e89;
     border-radius: 0.25rem;
-    padding: 0.525rem 1.05rem;
+    padding: 0.375rem 0.75rem;
     background-color: transparent;
     font-weight: 600;
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
