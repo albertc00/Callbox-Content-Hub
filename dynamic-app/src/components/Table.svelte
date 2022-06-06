@@ -1,4 +1,6 @@
 <script>
+  import { identity } from 'svelte/internal';
+
   export let data;
 
   export let colDef;
@@ -33,10 +35,15 @@
     <tbody>
       {#each data as row}
         <tr>
-          {#each colDef as { cellComponent, show, args }}
+          {#each colDef as { id, cellComponent, show, args }}
             {#if show}
               <td>
-                <svelte:component this={cellComponent} post={row} {...args} />
+                <svelte:component
+                  this={cellComponent}
+                  post={row}
+                  {...args}
+                  {id}
+                />
               </td>
             {/if}
           {/each}

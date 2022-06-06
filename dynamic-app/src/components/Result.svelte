@@ -1,6 +1,7 @@
 <script>
-  // import TextWithButton from './Functions/TextWithButton.svelte';
+  import PDF from './PDF.svelte';
   import Title from './Title.svelte';
+  import Webpage from './Webpage.svelte';
 
   import Textonly from './Functions/Textonly.svelte';
   import Header from './Functions/Header.svelte';
@@ -97,9 +98,8 @@
       show: true,
       title: 'PDF',
       headerComponent: Header,
-      cellComponent: ButtonLink,
+      cellComponent: PDF,
       cellAs: 'td',
-      args: { selector: 'acf.cb_asset' },
     },
     {
       id: 'webpage',
@@ -107,9 +107,8 @@
       show: false,
       title: 'WEBPAGE',
       headerComponent: Header,
-      cellComponent: ButtonLink,
+      cellComponent: Webpage,
       cellAs: 'td',
-      args: { selector: 'link' },
     },
     {
       id: 'webpage_unlocked',
@@ -117,9 +116,8 @@
       show: false,
       title: 'WEBPAGE UNLOCKED',
       headerComponent: Header,
-      cellComponent: ButtonLink,
+      cellComponent: Webpage,
       cellAs: 'td',
-      args: { selector: 'link' },
     },
     {
       id: 'target_dm',

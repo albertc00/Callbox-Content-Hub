@@ -5,7 +5,7 @@
 </script>
 
 <div class="center">
-  <span class="text">
+  <span title={text} class="text">
     {@html text}
   </span>
 </div>
@@ -13,5 +13,8 @@
 <style>
   .center {
     text-align: center;
+  }
+  span:hover {
+    cursor: help;
   }
 </style>

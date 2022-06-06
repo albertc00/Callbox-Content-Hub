@@ -1,6 +1,7 @@
 <script>
   import TextWithButton from './Functions/TextWithButton.svelte';
   import Modal from './modal/Modal.svelte';
+  import PreviewFieldResult from './PreviewFieldResult.svelte';
 
   export let post;
   const title = post.title.rendered;
@@ -10,7 +11,7 @@
 </script>
 
 <Modal title="Case Study Preview" bind:show>
-  <div style="height: 150vh; width: 400px; background-color: red;" />
+  <PreviewFieldResult {postID} />
 </Modal>
 
 <TextWithButton

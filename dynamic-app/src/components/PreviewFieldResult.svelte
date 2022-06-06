@@ -4,7 +4,8 @@
   import { useQuery } from '@sveltestack/svelte-query';
 
   $: page = $pages;
-  console.log($fieldID);
+  export let postID;
+  $fieldID = postID;
   const url = `https://www.callboxinc.com/wp-json/wp/v2/pages`;
   async function fetchPosts(page, $fieldID) {
     const res = await fetch(`${url}/${$fieldID}?_embed`);
