@@ -1,17 +1,31 @@
-<script>
-  import { fade, fly } from 'svelte/transition';
+<script context="module">
+  import { writable } from 'svelte/store';
 
-  import {
-    createEventDispatcher,
-    beforeUpdate,
-    afterUpdate,
-    onMount,
-  } from 'svelte';
+  const toggleModal = writable(null);
+
+  let showModal = null;
+  let hideModal = null;
+  toggleModal.subscribe((toggle) => {
+    showModal = toggle?.show;
+    hideModal = toggle?.hide;
+  });
+
+  export function useModal(options, Component, props) {
+    return [() => showModal(options, Component, props), () => hideModal()];
+  }
+</script>
+
+<script>
+  import { fly } from 'svelte/transition';
+
+  import { createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
 
   export let title = 'Modal';
-  export let show = true;
+  // export let show = true;
+
+  let Component = null;
 
   function clickOutside(node) {
     const handleClick = (event) => {
@@ -30,43 +44,49 @@
   }
 
   function handleClose() {
-    show = false;
+    Component = null;
     dispatch('close');
   }
 
+  // let scroll = false;
+
+  function bind(SlotComponent, props = {}) {
+    return function (options) {
+      return new SlotComponent({ ...options, props: { ...props } });
+    };
+  }
+
+  if (!$toggleModal) {
+    $toggleModal = {
+      show(options, SlotComponent, props) {
+        title = options.title;
+        Component = bind(SlotComponent, props);
+      },
+      hide() {
+        Component = null;
+      },
+    };
+  }
+
+  let vh;
   let modalRef;
-  let scroll = false;
-
-  beforeUpdate(() => {
-    // if (modalRef) {
-    //   const vh = window.innerHeight;
-    //   const marginTop = vh * 0.15;
-    //   const modalHeight = modalRef.offsetHeight + marginTop;
-    //   scroll = modalHeight > vh;
-    //   console.log(scroll);
-    // }
-  });
-
-  afterUpdate(() => {
-    if (modalRef) {
-      const vh = window.innerHeight;
-      const marginTop = vh * 0.15;
-      const modalHeight = modalRef.offsetHeight + marginTop;
-      scroll = modalHeight > vh;
-      console.log(scroll);
-    }
-  });
+  const marginTop = 8;
+  $: modalHeight = modalRef?.offsetHeight + vh * (marginTop / 100);
+  $: scroll = modalHeight > vh;
 </script>
 
-{#if show}
+<svelte:window bind:innerHeight={vh} />
+
+{#if Component}
   <div class="modal-bg" class:scroll>
     <div
       role="dialog"
       class="modal"
       use:clickOutside
-      bind:this={modalRef}
       on:clickOutside={handleClose}
       transition:fly={{ y: 50 }}
+      bind:this={modalRef}
+      style:margin-top={`${marginTop}vh`}
     >
       <div class="modal-header" class:hasTitle={title !== ''}>
         <h4 class="modal-title">{title}</h4>
@@ -83,7 +103,7 @@
         </button>
       </div>
       <div class="modal-content">
-        <slot />
+        <svelte:component this={Component} />
       </div>
     </div>
   </div>
@@ -107,13 +127,13 @@
   }
 
   .modal {
-    margin-top: 15vh;
+    /* margin-top: 15vh; */
     align-self: flex-start;
     background-color: #fff;
     border-radius: 0.25rem;
     box-shadow: 0 1px 24px 0 rgb(0 0 0 / 8%);
     min-width: 400px;
-    max-width: 75%;
+    max-width: 90%;
     min-height: 200px;
   }
 

@@ -5,21 +5,15 @@
 
   import Textonly from './Functions/Textonly.svelte';
   import Header from './Functions/Header.svelte';
-  import ButtonLink from './Functions/ButtonLink.svelte';
   import TableFunc from './Functions/TableFunc.svelte';
   import DropdownActions from './DropdownActions.svelte';
-  import CompanyImage from './Functions/CompanyImage.svelte';
   import Hyperlink from './Functions/Hyperlink.svelte';
 
   import { useQuery } from '@sveltestack/svelte-query';
   import Table from './Table.svelte';
   import { LightPaginationNav } from './pagination/index';
-  import TableLoading from './TableLoading.svelte';
   import { cols, pages, fieldID } from './store';
 
-  import { onMount } from 'svelte';
-  import ModalPrev from './modal/ModalPrev.svelte';
-  import ViewResult from './ViewResult.svelte';
   import ShowHideCols from './modal/ShowHideCols.svelte';
   import Modal from './modal/Modal.svelte';
 
@@ -48,24 +42,24 @@
   $: isError = $queryResult.isError;
   $: totalPage = d?.totalPage;
   $: data = d?.data;
+  $: console.log(data);
+  // let box;
+  // let yTop = 0;
+  // let yHeight;
+  // let yScroll;
 
-  let box;
-  let yTop = 0;
-  let yHeight;
-  let yScroll;
+  // function parseScroll() {
+  //   yTop = box.scrollTop;
+  //   yHeight = box.clientHeight;
+  //   yScroll = box.scrollHeight;
+  // }
 
-  function parseScroll() {
-    yTop = box.scrollTop;
-    yHeight = box.clientHeight;
-    yScroll = box.scrollHeight;
-  }
+  // onMount(async () => parseScroll());
 
-  onMount(async () => parseScroll());
-
-  $: colDef = [
+  let colDef = [
     {
-      id: 'title',
       label: 'Title',
+      id: 'title',
       show: true,
       title: 'Title',
       headerComponent: Header,
@@ -106,15 +100,6 @@
       label: 'Webpage',
       show: false,
       title: 'WEBPAGE',
-      headerComponent: Header,
-      cellComponent: Webpage,
-      cellAs: 'td',
-    },
-    {
-      id: 'webpage_unlocked',
-      label: 'Webpage (Unlocked)',
-      show: false,
-      title: 'WEBPAGE UNLOCKED',
       headerComponent: Header,
       cellComponent: Webpage,
       cellAs: 'td',
@@ -203,10 +188,9 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'acf.cs_client.lob' },
+      args: { selector: 'acf.cs_client.lob', center: false },
     },
   ];
-  let showAction = false;
 
   const ddaText = 'Table actions';
   const ddaActions = [
@@ -214,45 +198,64 @@
     { text: 'Coming soon...', id: 'COMING_SOON_1' },
     { text: 'Coming soon...', id: 'COMING_SOON_2' },
   ];
-  let show = false;
 
+  //let show = false;
+
+  import { useModal } from './modal/Modal.svelte';
+
+  $: [show, hide] = useModal(
+    { title: 'Choose which columns you see' },
+    ShowHideCols,
+    {
+      cols: colDef,
+      onApply: handleApply,
+      onClose: handleClose,
+    }
+  );
+
+  function handleClose() {
+    hide();
+  }
+
+  function handleApply(detail) {
+    colDef = detail;
+    hide();
+    //let title = 'Choose which columns you see';
+    // let printCols = 'nayeon';
+    // printCols = JSON.stringify(colDef, null, 2);
+    // console.log(printCols);
+  }
   function handleDropdownAction({ text, id }) {
-    console.log(`${id}: ${text}`);
+    // console.log(`${id}: ${text}`);
 
     switch (id) {
       case 'EDIT_COLUMNS':
-        show = true;
+        show();
+
         break;
       default:
         break;
     }
   }
 
-  let title = 'Choose which columns you see';
-  let printCols = 'nayeon';
-  function handleApply({ detail }) {
-    colDef = detail;
-    show = false;
-    printCols = JSON.stringify(colDef, null, 2);
-    console.log(printCols);
-  }
+  // $: [showprev, hideprev] = useModal(
+  //   { title: 'Choose which columns you see' },
+  //   PreviewFieldResult,
+  //   {
+  //     postID: 75702,
+  //   }
+  // );
 
-  function handleClose({ detail }) {
-    show = false;
-  }
+  // function handleClose({ detail }) {
+  //   show = false;
+  // }
 </script>
 
-<!-- {#if $fieldID > 0}
-  <ModalPrev modalContent={ViewResult} />
-{/if} -->
-
-<!-- <Modal show={$fieldID > 0}>
-  <ViewResult />
-</Modal> -->
-<Modal {title} bind:show>
+<!-- <Modal {title} bind:show>
   <ShowHideCols cols={colDef} on:apply={handleApply} on:cancel={handleClose} />
-</Modal>
+</Modal> -->
 
+<Modal />
 <div class="top-wrapper">
   <div class="actionContainer">
     <DropdownActions
@@ -261,28 +264,19 @@
       onAction={handleDropdownAction}
     />
   </div>
-
+  <h2 class="table-label">Case Studies</h2>
   <!-- <Query options={queryOptions}>
     <div slot="query" let:queryResult={{ data, isFetching, isError }}> -->
   <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
   <div class="cntnr">
     <div class="results svelte-fhxlyi">
       {#if isFetching || isLoading}
-        <div class="loading">
-          <div
-            class="table-wrapper"
-            class:tableScrolled={yTop > 45}
-            bind:this={box}
-            on:scroll={parseScroll}
-            on:mousemove={parseScroll}
-          >
-            <TableLoading />
-          </div>
+        <div class="table-container">
+          <Table data={null} {colDef} />
         </div>
       {:else if isError}
         <span>Error</span>
       {:else}
-        <h2 class="table-label">Case Studies</h2>
         <div class="table-container">
           <!-- this is table -->
           <Table {data} {colDef} />
@@ -293,9 +287,9 @@
           <LightPaginationNav
             totalItems={totalPage}
             pageSize={9}
-            currentPage={$pages}
+            currentPage={page}
             limit={1}
-            on:setPage={(e) => ($pages = e.detail.page)}
+            on:setPage={(e) => (page = e.detail.page)}
           />
         </div>
       {/if}
@@ -331,17 +325,6 @@
     overflow: auto;
     width: 100%;
     margin: auto;
-  }
-
-  .table-wrapper {
-    overflow: scroll;
-    width: 95vw;
-    max-height: 69vh;
-    margin: 0 auto;
-  }
-
-  .loading {
-    padding-top: 55px;
   }
 
   .area-2 {

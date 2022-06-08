@@ -1,31 +1,28 @@
 <script>
   export let post;
-  export let texts = 'text';
-  console.log(texts);
-  const text = texts.split('.').reduce((prev, curr) => prev[curr], post);
-
+  export let texts;
   export let as = 'p';
-  //   export let text;
-
   export let links;
-  console.log(links);
+  const text = texts.split('.').reduce((prev, curr) => prev[curr], post);
   const link = links.split('.').reduce((prev, curr) => prev[curr], post);
 </script>
 
-{#if as === 'p'}
-  <p class="hyperlink"><a href={link}>{text}</a></p>
-{:else if as === 'span'}
-  <span class="hyperlink"><a href={link}>{text}</a></span>
-{:else}
-  <div class="hyperlink"><a href={link}>{text}</a></div>
-{/if}
+<svelte:element this={as} class="hyperlink"
+  ><a href={link}>{text}</a></svelte:element
+>
 
 <style>
   .hyperlink {
+    margin: 0;
     text-align: center;
   }
+
   .hyperlink a {
     text-decoration: none;
     color: #196fd9;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-family: 'Lato', sans-serif;
+    font-weight: 600;
   }
 </style>

@@ -1,31 +1,40 @@
 <script>
-  import TextWithButton from './Functions/TextWithButton.svelte';
+  import PDF from './PDF.svelte';
+  import Title from './Title.svelte';
+  import Webpage from './Webpage.svelte';
+  import Hyperlink from './Functions/Hyperlink.svelte';
+
   import Textonly from './Functions/Textonly.svelte';
   import Header from './Functions/Header.svelte';
-  import ButtonLink from './Functions/ButtonLink.svelte';
   import TableFunc from './Functions/TableFunc.svelte';
 
   import { useQuery } from '@sveltestack/svelte-query';
   import Table from './Table.svelte';
   import { LightPaginationNav } from './pagination/index';
-  import TableLoading from './TableLoading.svelte';
-  import { cols, pages, fieldID, SearchTerm } from './store';
+  import { pages, fieldID, SearchTerm } from './store';
 
   import DropdownActions from './DropdownActions.svelte';
   import ShowHideCols from './modal/ShowHideCols.svelte';
   import Modal from './modal/Modal.svelte';
 
-  const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
+  // const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
 
+  const url = `https://www.callboxinc.com/wp-json/wp/v2/pages`;
   let s;
   $: s = $SearchTerm.toLowerCase();
   $: page = $pages;
+  $: console.log(s);
   async function fetchPosts(s, page) {
-    const res = await fetch(`${url}?s=${s}&page=${page}&per_page=9&fields=-1`);
+    // const res = await fetch(`${url}?s=${s}&page=${page}&per_page=9&fields=-1`);
+    const res = await fetch(
+      `${url}?_embed&search=${s}&tags=1220&page=${page}&per_page=9`
+    );
+
+    const totalPage = res.headers.get('x-wp-total');
 
     const data = await res.json();
 
-    return { data };
+    return { data, totalPage };
   }
 
   $: queryResult = useQuery(['posts', s, page], () => fetchPosts(s, page), {
@@ -34,27 +43,21 @@
     refetchOnWindowFocus: false,
   });
 
+  // $: d = $queryResult.data;
+  // $: isFetching = $queryResult.isFetching;
+  // $: isLoading = $queryResult.isLoading;
+  // $: isError = $queryResult.isError;
+  // $: data = d?.data[0];
+
   $: d = $queryResult.data;
   $: isFetching = $queryResult.isFetching;
   $: isLoading = $queryResult.isLoading;
   $: isError = $queryResult.isError;
-  $: data = d?.data[0];
+  $: totalPage = d?.totalPage;
+  $: data = d?.data;
 
   import { onMount } from 'svelte';
   import NoResult from './NoResult.svelte';
-  import PreviewSearchResult from './PreviewSearchResult.svelte';
-  import ModalPrev from './modal/ModalPrev.svelte';
-
-  let box;
-  let yTop = 0;
-  let yHeight;
-  let yScroll;
-
-  function parseScroll() {
-    yTop = box.scrollTop;
-    yHeight = box.clientHeight;
-    yScroll = box.scrollHeight;
-  }
 
   onMount(async () => parseScroll());
 
@@ -65,9 +68,8 @@
       show: true,
       title: 'Title',
       headerComponent: Header,
-      cellComponent: TextWithButton,
+      cellComponent: Title,
       cellAs: 'td',
-      args: { selector: 'title' },
     },
     {
       id: 'product',
@@ -77,7 +79,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'product' },
+      args: { selector: 'acf.cs_client_industry' },
     },
     {
       id: 'targetLocation',
@@ -87,7 +89,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'targetLocation' },
+      args: { selector: 'acf.cs_target_location' },
     },
     {
       id: 'pdf',
@@ -95,9 +97,8 @@
       show: true,
       title: 'PDF',
       headerComponent: Header,
-      cellComponent: ButtonLink,
+      cellComponent: PDF,
       cellAs: 'td',
-      args: { selector: 'pdf' },
     },
     {
       id: 'webpage',
@@ -105,9 +106,8 @@
       show: false,
       title: 'WEBPAGE',
       headerComponent: Header,
-      cellComponent: ButtonLink,
+      cellComponent: Webpage,
       cellAs: 'td',
-      args: { selector: 'link' },
     },
     {
       id: 'webpage_unlocked',
@@ -115,9 +115,8 @@
       show: false,
       title: 'WEBPAGE UNLOCKED',
       headerComponent: Header,
-      cellComponent: ButtonLink,
+      cellComponent: Webpage,
       cellAs: 'td',
-      args: { selector: 'linkUnlocked' },
     },
     {
       id: 'target_dm',
@@ -128,7 +127,7 @@
       cellComponent: Textonly,
       cellAs: 'td',
 
-      args: { selector: 'targetDM' },
+      args: { selector: 'acf.cs_target_dm' },
     },
     {
       id: 'target_industry',
@@ -139,7 +138,7 @@
       cellComponent: Textonly,
       cellAs: 'td',
 
-      args: { selector: 'targetIndustry' },
+      args: { selector: 'acf.cs_target_industry' },
     },
     {
       id: 'client_location',
@@ -149,7 +148,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'clientLocation' },
+      args: { selector: 'acf.cs_client_location' },
     },
     {
       id: 'client_HQ',
@@ -159,7 +158,7 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'clientHQ' },
+      args: { selector: 'acf.cs_client_hq' },
     },
     {
       id: 'campaign',
@@ -169,7 +168,7 @@
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      args: { selector: 'campaign' },
+      args: { selector: 'acf.cs_campaign_types' },
     },
     {
       id: 'results',
@@ -179,11 +178,33 @@
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      hidden: !$cols.includes('results'),
-      args: { selector: 'results' },
+      args: { selector: 'acf.cs_results' },
+    },
+    {
+      id: 'client',
+      label: 'Client',
+      show: false,
+      title: 'Client',
+      headerComponent: Header,
+      cellComponent: Hyperlink,
+      cellAs: 'td',
+      args: {
+        texts: 'acf.cs_client.name',
+        links: 'acf.cs_client.website',
+        as: 'p',
+      },
+    },
+    {
+      id: 'clientLob',
+      label: 'Client LOB',
+      show: false,
+      title: 'Client LOB',
+      headerComponent: Header,
+      cellComponent: Textonly,
+      cellAs: 'td',
+      args: { selector: 'acf.cs_client.lob' },
     },
   ];
-
   const ddaText = 'Table actions';
   const ddaActions = [
     { text: 'Edit columns', id: 'EDIT_COLUMNS' },
@@ -218,9 +239,9 @@
   }
 </script>
 
-{#if $fieldID > 0}
+<!-- {#if $fieldID > 0}
   <ModalPrev modalContent={PreviewSearchResult} />
-{/if}
+{/if} -->
 
 <Modal {title} bind:show>
   <ShowHideCols cols={colDef} on:apply={handleApply} on:cancel={handleClose} />
@@ -234,46 +255,26 @@
       onAction={handleDropdownAction}
     />
   </div>
+  <h2 class="table-label">Case Studies</h2>
 
-  <div id="selection" class="modal" />
-  <!-- <Query options={queryOptions}>
-    <div slot="query" let:queryResult={{ data, isFetching, isError }}> -->
   <div class="cntnr">
     <div class="results svelte-fhxlyi">
       {#if isFetching}
-        <div class="loading">
-          <div
-            class="table-wrapper"
-            class:tableScrolled={yTop > 45}
-            bind:this={box}
-            on:scroll={parseScroll}
-            on:mousemove={parseScroll}
-          >
-            <TableLoading />
-          </div>
+        <div class="table-container">
+          <Table data={null} {colDef} />
         </div>
       {:else if isError}
         <span>Error</span>
-      {:else if data.posts?.length}
-        <h2 class="table-label">Case Studies</h2>
+      {:else if data?.length}
         <div class="table-container">
-          <div
-            class="table-wrapper"
-            class:tableScrolled={yTop > 50}
-            bind:this={box}
-            on:scroll={parseScroll}
-            on:mousemove={parseScroll}
-          >
-            <!-- this is table -->
-            <Table data={data?.posts} {colDef} />
-
-            <!-- table helloworld -->
-          </div>
+          <!-- this is table -->
+          <Table {data} {colDef} />
+          <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
         </div>
         <div class="area-2">
           <LightPaginationNav
-            totalItems={data?.total}
-            pageSize={10}
+            totalItems={totalPage}
+            pageSize={9}
             currentPage={$pages}
             limit={1}
             on:setPage={(e) => ($pages = e.detail.page)}
@@ -286,8 +287,127 @@
   </div>
 </div>
 
-<!-- </Query>
-</div> -->
+<!-- $: colDef = [
+  {
+    id: 'title',
+    label: 'Title',
+    show: true,
+    title: 'Title',
+    headerComponent: Header,
+    cellComponent: Title,
+    cellAs: 'td',
+  },
+  {
+    id: 'product',
+    label: 'Product or Service',
+    show: true,
+    title: 'Product or Service',
+    headerComponent: Header,
+    cellComponent: Textonly,
+    cellAs: 'td',
+    args: { selector: 'product' },
+  },
+  {
+    id: 'targetLocation',
+    label: 'Target Location',
+    show: true,
+    title: 'TARGET LOCATION',
+    headerComponent: Header,
+    cellComponent: Textonly,
+    cellAs: 'td',
+    args: { selector: 'targetLocation' },
+  },
+  {
+    id: 'pdf',
+    label: 'PDF',
+    show: true,
+    title: 'PDF',
+    headerComponent: Header,
+    cellComponent: PDF,
+    cellAs: 'td',
+  },
+  {
+    id: 'webpage',
+    label: 'Webpage',
+    show: false,
+    title: 'WEBPAGE',
+    headerComponent: Header,
+    cellComponent: Webpage,
+    cellAs: 'td',
+  },
+  {
+    id: 'webpage_unlocked',
+    label: 'Webpage (Unlocked)',
+    show: false,
+    title: 'WEBPAGE UNLOCKED',
+    headerComponent: Header,
+    cellComponent: Webpage,
+    cellAs: 'td',
+  },
+  {
+    id: 'target_dm',
+    label: 'Target DM',
+    show: false,
+    title: 'TARGET DM',
+    headerComponent: Header,
+    cellComponent: Textonly,
+    cellAs: 'td',
+
+    args: { selector: 'targetDM' },
+  },
+  {
+    id: 'target_industry',
+    label: 'Target Industry',
+    show: false,
+    title: 'TARGET INDUSTRY',
+    headerComponent: Header,
+    cellComponent: Textonly,
+    cellAs: 'td',
+
+    args: { selector: 'targetIndustry' },
+  },
+  {
+    id: 'client_location',
+    label: 'Client Location',
+    show: false,
+    title: 'CLIENT LOCATION',
+    headerComponent: Header,
+    cellComponent: Textonly,
+    cellAs: 'td',
+    args: { selector: 'clientLocation' },
+  },
+  {
+    id: 'client_HQ',
+    label: 'Client HQ',
+    show: false,
+    title: 'CLIENT HQ',
+    headerComponent: Header,
+    cellComponent: Textonly,
+    cellAs: 'td',
+    args: { selector: 'clientHQ' },
+  },
+  {
+    id: 'campaign',
+    label: 'Campaign',
+    show: false,
+    title: 'CAMPAIGN',
+    headerComponent: Header,
+    cellComponent: TableFunc,
+    cellAs: 'td',
+    args: { selector: 'campaign' },
+  },
+  {
+    id: 'results',
+    label: 'Results',
+    show: false,
+    title: 'RESULTS',
+    headerComponent: Header,
+    cellComponent: TableFunc,
+    cellAs: 'td',
+    hidden: !$cols.includes('results'),
+    args: { selector: 'results' },
+  },
+]; -->
 <style>
   .actionContainer {
     padding: 1rem 0;
@@ -311,25 +431,6 @@
   .table-container {
     width: 100%;
     margin: auto;
-  }
-
-  .table-wrapper {
-    width: 95vw;
-    max-height: 69vh;
-    margin: 0 auto;
-  }
-
-  .loading {
-    padding-top: 55px;
-  }
-  .modal {
-    padding-top: 5px;
-    padding-bottom: 10px;
-    display: grid;
-    grid-auto-flow: column;
-    justify-content: end;
-    width: 95vw;
-    margin: 0 auto;
   }
 
   .area-2 {

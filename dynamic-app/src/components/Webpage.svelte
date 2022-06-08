@@ -1,12 +1,21 @@
 <script>
-  import Anchor from './Anchor.svelte';
+  import Button from './Button.svelte';
   export let post;
-  export let id;
   let webpage = post.link;
 </script>
 
-{#if id === 'webpage'}
-  <Anchor link={webpage}>See Webpage</Anchor>
-{:else if id === 'webpage_unlocked'}
-  <Anchor link={`${webpage}?user=benb`}>See Full Webpage</Anchor>
-{/if}
+<div class="center">
+  <Button href={webpage}>Gated</Button>
+
+  <Button href={`${webpage}?user=benb`}>Unlocked</Button>
+</div>
+
+<style>
+  .center {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    gap: 0.5rem;
+    text-align: center;
+    justify-content: center;
+  }
+</style>

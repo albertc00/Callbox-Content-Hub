@@ -32,12 +32,17 @@
 
   let tempCols = cols.map((col) => ({ ...col }));
 
+  export let onApply;
+  export let onClose;
+
   function handleSubmit() {
     dispatch('apply', tempCols);
+    onApply(tempCols);
   }
 
   function handleCancel() {
     dispatch('cancel');
+    onClose();
   }
 
   function remove(id) {
@@ -272,6 +277,10 @@
     background-color: #fff;
     color: #5f7380;
   }
+
+  /* .show-cols .scroll-container {
+    position: relative;
+  } */
 
   .show-cols li {
     cursor: grab;

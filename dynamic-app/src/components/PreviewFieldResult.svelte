@@ -29,8 +29,8 @@
   $: isFetching = $queryResult.isFetching;
   $: isLoading = $queryResult.isLoading;
   $: isError = $queryResult.isError;
+  $: console.log('search');
   $: console.log(data);
-  $: console.log(data?.title.rendered);
 </script>
 
 <!-- <SearchFormClose />

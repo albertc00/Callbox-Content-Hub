@@ -14,7 +14,8 @@
 
 <div class="wrapper-spacer" />
 <div class="wrapper-bar">
-  <button class="menubar" on:click={() => (show = true)}>
+  <div class="menubar" />
+  <!-- <button class="menubar" on:click={() => (show = true)}>
     <div class="menubarlabel">
       <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48"
         ><path d="M20 36V33H28V36ZM6 15V12H42V15ZM12 25.5V22.5H36V25.5Z" /></svg
@@ -23,7 +24,7 @@
   </button>
   <Modal title={'Select Filter'} bind:show>
     <Filter />
-  </Modal>
+  </Modal> -->
 
   <form class="form" on:submit|preventDefault={handleOnSubmit}>
     <div class="wrapper svelte-iqmikt">

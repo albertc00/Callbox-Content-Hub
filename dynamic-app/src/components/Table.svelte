@@ -1,7 +1,7 @@
 <script>
-  import { identity } from 'svelte/internal';
+  import Skeleton from './Functions/Skeleton.svelte';
 
-  export let data;
+  export let data = null;
 
   export let colDef;
 
@@ -10,8 +10,10 @@
   // const ids = new Set();
   // res.flatMap(({ posts }) => posts).filter(({ id }) => ids.has(id) ? false : ids.add(id));
 
+  const dummyRows = [{}, {}, {}, {}, {}, {}, {}, {}, {}];
+
   const mql = window.matchMedia('(min-width: 1281px)');
-  $: maxCols = mql.matches ? 6 : 4;
+  $: maxCols = mql.matches ? 6 : 5;
   $: visible = colDef.filter(({ show }) => show);
   $: colCount = visible.length;
   $: excessCols = Math.max(colCount - maxCols, 0);
@@ -19,10 +21,10 @@
 
 <div class="table-wrapper">
   <!-- {#each tableData as { posts, id } (id)} -->
-  <table style={`width: calc(98vw + (310px * ${excessCols}));`}>
+  <table style:width={`calc(98vw + (250px * ${excessCols}))`}>
     <thead>
       <tr bind:this={rowRef}>
-        {#each colDef as { title, headerComponent, show }, i}
+        {#each colDef as { title, headerComponent, show }, i (i)}
           {#if show}
             <th>
               <svelte:component this={headerComponent} text={title} />
@@ -33,22 +35,36 @@
     </thead>
 
     <tbody>
-      {#each data as row}
-        <tr>
-          {#each colDef as { id, cellComponent, show, args }}
-            {#if show}
-              <td>
-                <svelte:component
-                  this={cellComponent}
-                  post={row}
-                  {...args}
-                  {id}
-                />
-              </td>
-            {/if}
-          {/each}
-        </tr>
-      {/each}
+      {#if data}
+        {#each data as row}
+          <tr>
+            {#each colDef as { id, cellComponent, show, args } (id)}
+              {#if show}
+                <td>
+                  <svelte:component
+                    this={cellComponent}
+                    post={row}
+                    {...args}
+                    {id}
+                  />
+                </td>
+              {/if}
+            {/each}
+          </tr>
+        {/each}
+      {:else}
+        {#each dummyRows as dummyRow (dummyRow)}
+          <tr>
+            {#each colDef as { id, show } (id)}
+              {#if show}
+                <td>
+                  <Skeleton />
+                </td>
+              {/if}
+            {/each}
+          </tr>
+        {/each}
+      {/if}
     </tbody>
   </table>
 </div>
@@ -64,7 +80,6 @@
 
   table {
     border-collapse: collapse;
-    width: 100%;
     table-layout: fixed;
   }
 

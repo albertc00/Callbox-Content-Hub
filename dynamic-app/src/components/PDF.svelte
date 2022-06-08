@@ -1,11 +1,12 @@
 <script>
+  export let id;
+
   import Button from './Button.svelte';
-  import ButtonLink from './Functions/ButtonLink.svelte';
 
   export let post;
-  const pdf = post.acf.cb_asset;
-
   let copied = false;
+
+  const pdf = post.acf.cb_asset;
   const copy = async () => {
     await navigator.clipboard.writeText(pdf);
     copied = true;
@@ -17,9 +18,15 @@
 </script>
 
 <div class="center">
-  <ButtonLink link={pdf} buttonText="View PDF" />
+  <Button href={pdf}>View PDF</Button>
 
-  <Button on:click={copy}>Copy link</Button>
+  <Button on:click={copy}>
+    {#if copied}
+      Copied
+    {:else}
+      Copy link
+    {/if}
+  </Button>
 </div>
 
 <style>
