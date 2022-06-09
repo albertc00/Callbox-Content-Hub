@@ -10,7 +10,6 @@
   <span title={text} class="text">
     {@html text}
   </span>
-  <!-- <TextWithInfo {as} info={text}>{@html text}</TextWithInfo> -->
 </div>
 
 <style>

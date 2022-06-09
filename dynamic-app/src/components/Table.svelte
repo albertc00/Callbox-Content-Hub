@@ -2,10 +2,8 @@
   import Skeleton from './Functions/Skeleton.svelte';
 
   export let data = null;
-
   export let colDef;
-
-  let rowRef;
+  export let wrapperRef = null;
 
   // const ids = new Set();
   // res.flatMap(({ posts }) => posts).filter(({ id }) => ids.has(id) ? false : ids.add(id));
@@ -19,11 +17,11 @@
   $: excessCols = Math.max(colCount - maxCols, 0);
 </script>
 
-<div class="table-wrapper">
+<div class="table-wrapper" bind:this={wrapperRef}>
   <!-- {#each tableData as { posts, id } (id)} -->
   <table style:width={`calc(98vw + (250px * ${excessCols}))`}>
     <thead>
-      <tr bind:this={rowRef}>
+      <tr>
         {#each colDef as { title, headerComponent, show }, i (i)}
           {#if show}
             <th>

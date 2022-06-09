@@ -8,3 +8,4 @@ export const fieldID = writable('');
 export const pages = writable(1);
 export const category = writable(1);
 export const colModal = writable(false);
+export const boundary = writable(null);

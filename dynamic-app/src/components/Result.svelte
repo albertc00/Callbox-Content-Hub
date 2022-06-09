@@ -1,4 +1,6 @@
 <script>
+  import { useModal } from './modal/Modal.svelte';
+  import TextWithTooltip from './Functions/TextWithTooltip.svelte';
   import PDF from './PDF.svelte';
   import Title from './Title.svelte';
   import Webpage from './Webpage.svelte';
@@ -12,10 +14,9 @@
   import { useQuery } from '@sveltestack/svelte-query';
   import Table from './Table.svelte';
   import { LightPaginationNav } from './pagination/index';
-  import { pages } from './store';
+  import { pages, boundary } from './store';
 
   import ShowHideCols from './modal/ShowHideCols.svelte';
-  import Modal from './modal/Modal.svelte';
 
   const url = `https://www.callboxinc.com/wp-json/wp/v2/pages`;
 
@@ -43,7 +44,7 @@
   $: totalPage = d?.totalPage;
   $: data = d?.data;
 
-  let colDef = [
+  $: colDef = [
     {
       label: 'Title',
       id: 'title',
@@ -186,11 +187,6 @@
     { text: 'Coming soon...', id: 'COMING_SOON_2' },
   ];
 
-  //let show = false;
-
-  import { useModal } from './modal/Modal.svelte';
-  import TextWithTooltip from './Functions/TextWithTooltip.svelte';
-
   $: [show, hide] = useModal(
     { title: 'Choose which columns you see' },
     ShowHideCols,
@@ -255,7 +251,7 @@
       {:else}
         <div class="table-container">
           <!-- this is table -->
-          <Table {data} {colDef} />
+          <Table {data} {colDef} bind:wrapperRef={$boundary} />
           <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
         </div>
 

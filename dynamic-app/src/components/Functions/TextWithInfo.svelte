@@ -1,8 +1,10 @@
 <script>
+  import { beforeUpdate } from 'svelte';
   import { fade } from 'svelte/transition';
 
   export let as = 'p';
   export let info;
+  export let boundary;
 
   let hovered = false;
   let checked = false;
@@ -15,6 +17,10 @@
     hovered = false;
   }
 
+  let ref;
+  const getRef = (node) => (ref = node);
+  $: hasEllipses = ref?.offsetWidth < ref?.scrollWidth;
+
   function uniqueId(len = 6, prefix = 'uid_') {
     const arr = window.crypto.getRandomValues(
       new Uint8Array(Math.ceil(Math.min(len, 40) / 2))
@@ -24,13 +30,47 @@
   }
 
   const tooltipID = uniqueId();
+
+  const boundaryRect = boundary.getBoundingClientRect();
+  const {
+    left: boundaryLeft,
+    right: boundaryRight,
+    bottom: boundaryBottom,
+  } = boundaryRect;
+
+  let tooltipRef;
+  $: tipRect = tooltipRef?.getBoundingClientRect();
+  $: tipRight = tipRect?.right;
+  $: tipLeft = tipRect?.left;
+  $: tipBottom = tipRect?.bottom;
+  $: tipHeight = tipRect?.height;
+
+  $: boundarySrollYWidth = boundary?.offsetWidth - boundary?.clientWidth;
+
+  beforeUpdate(() => {
+    if (hovered || checked) {
+      if (tipBottom > boundaryBottom) {
+        tooltipRef.style.top = `-${tipHeight + 10}px`;
+      }
+
+      if (tipRight > boundaryRight) {
+        tooltipRef.style.left = `${
+          boundaryRight - tipRight - boundarySrollYWidth - 10
+        }px`;
+      }
+
+      if (tipLeft < boundaryLeft) {
+        tooltipRef.style.left = `${Math.abs(tipLeft) + boundaryLeft + 10}px`;
+      }
+    }
+  });
 </script>
 
 <div class="wrapper">
-  <svelte:element this={as} class="text">
+  <svelte:element this={as} class="text" use:getRef>
     <slot />
   </svelte:element>
-  {#if info.length}
+  {#if hasEllipses}
     <label
       class="icon-wrapper"
       class:checked
@@ -58,6 +98,7 @@
         id={tooltipID}
         role="tooltip"
         class="tip"
+        bind:this={tooltipRef}
         transition:fade={{ delay: 100, duration: 150 }}
       >
         {info}
@@ -69,14 +110,14 @@
 <style>
   .wrapper {
     position: relative;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 0.25rem;
   }
 
   .text {
     margin: 0;
-    width: 30ch;
+    width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

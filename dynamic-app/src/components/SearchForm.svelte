@@ -76,7 +76,7 @@
 
     cursor: pointer;
   }
-  .menulabel {
+  /* .menulabel {
     color: #231f20;
     font-family: 'open Sans', sans-serif;
     font-weight: 400;
@@ -86,7 +86,7 @@
     display: grid;
     grid-template-columns: 2fr 3fr;
     align-items: center;
-  }
+  } */
 
   .form {
     max-width: 350px;

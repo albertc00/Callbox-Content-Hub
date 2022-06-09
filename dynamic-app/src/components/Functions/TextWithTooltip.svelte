@@ -1,5 +1,6 @@
 <script>
   import TextWithInfo from './TextWithInfo.svelte';
+  import { boundary } from '../store';
 
   export let post;
   export let selector = 'text';
@@ -12,7 +13,8 @@
   <!-- <span title={text} class="text">
       {@html text}
     </span> -->
-  <TextWithInfo {as} info={text}>{@html text}</TextWithInfo>
+  <TextWithInfo {as} info={text} boundary={$boundary}>{@html text}</TextWithInfo
+  >
 </div>
 
 <style>

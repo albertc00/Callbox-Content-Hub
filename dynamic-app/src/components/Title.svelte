@@ -23,8 +23,4 @@
   });
 </script>
 
-<!-- <Modal title="Case Study Preview" bind:show>
-  <PreviewFieldResult {postID} />
-</Modal> -->
-
 <TextWithButton text={title} buttonText="Details" on:click={() => show()} />
