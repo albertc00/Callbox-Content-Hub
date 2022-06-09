@@ -1,7 +1,7 @@
 <script>
   import Result from './Result.svelte';
   import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query';
-  import { isSearching, fields, category } from './store';
+  import { isSearching, category } from './store';
   import SearchForm from './SearchForm.svelte';
   import FieldResult from './FieldResult.svelte';
   import SearchResult from './SearchResult.svelte';
@@ -10,7 +10,7 @@
   import UserAccount from './UserAccount.svelte';
   import BlogResult from './Blog/BlogResult.svelte';
   import BlogSearchResult from './Blog/BlogSearchResult.svelte';
-
+  import Modal from './modal/Modal.svelte';
   const queryClient = new QueryClient();
 </script>
 
@@ -29,17 +29,18 @@
     </div>
     {#if $category == 1}
       {#if $isSearching}
-        {#if $fields.length}
+        <!-- {#if $fields.length}
           <SearchForm />
           <FieldResult />
-        {:else}
-          <SearchForm />
-          <SearchResult />
-        {/if}
+        {:else} -->
+        <SearchForm />
+        <SearchResult />
+        <!-- {/if} -->
       {:else}
         <SearchForm />
         <Result />
       {/if}
+      <Modal />
     {:else if $category == 2}
       {#if $isSearching}
         <BlogSearchResult />

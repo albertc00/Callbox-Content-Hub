@@ -12,7 +12,7 @@
   import { useQuery } from '@sveltestack/svelte-query';
   import Table from './Table.svelte';
   import { LightPaginationNav } from './pagination/index';
-  import { cols, pages, fieldID } from './store';
+  import { pages } from './store';
 
   import ShowHideCols from './modal/ShowHideCols.svelte';
   import Modal from './modal/Modal.svelte';
@@ -42,19 +42,6 @@
   $: isError = $queryResult.isError;
   $: totalPage = d?.totalPage;
   $: data = d?.data;
-  $: console.log(data);
-  // let box;
-  // let yTop = 0;
-  // let yHeight;
-  // let yScroll;
-
-  // function parseScroll() {
-  //   yTop = box.scrollTop;
-  //   yHeight = box.clientHeight;
-  //   yScroll = box.scrollHeight;
-  // }
-
-  // onMount(async () => parseScroll());
 
   let colDef = [
     {
@@ -80,7 +67,7 @@
       id: 'targetLocation',
       label: 'Target Location',
       show: true,
-      title: 'TARGET LOCATION',
+      title: 'Target Location',
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
@@ -169,7 +156,7 @@
     {
       id: 'client',
       label: 'Client',
-      show: false,
+      show: true,
       title: 'Client',
       headerComponent: Header,
       cellComponent: Hyperlink,
@@ -186,7 +173,7 @@
       show: false,
       title: 'Client LOB',
       headerComponent: Header,
-      cellComponent: Textonly,
+      cellComponent: TextWithTooltip,
       cellAs: 'td',
       args: { selector: 'acf.cs_client.lob', center: false },
     },
@@ -202,6 +189,7 @@
   //let show = false;
 
   import { useModal } from './modal/Modal.svelte';
+  import TextWithTooltip from './Functions/TextWithTooltip.svelte';
 
   $: [show, hide] = useModal(
     { title: 'Choose which columns you see' },
@@ -225,6 +213,7 @@
     // printCols = JSON.stringify(colDef, null, 2);
     // console.log(printCols);
   }
+
   function handleDropdownAction({ text, id }) {
     // console.log(`${id}: ${text}`);
 
@@ -237,25 +226,12 @@
         break;
     }
   }
-
-  // $: [showprev, hideprev] = useModal(
-  //   { title: 'Choose which columns you see' },
-  //   PreviewFieldResult,
-  //   {
-  //     postID: 75702,
-  //   }
-  // );
-
-  // function handleClose({ detail }) {
-  //   show = false;
-  // }
 </script>
 
 <!-- <Modal {title} bind:show>
   <ShowHideCols cols={colDef} on:apply={handleApply} on:cancel={handleClose} />
 </Modal> -->
 
-<Modal />
 <div class="top-wrapper">
   <div class="actionContainer">
     <DropdownActions

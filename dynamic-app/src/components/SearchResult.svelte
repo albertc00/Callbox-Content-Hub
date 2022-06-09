@@ -11,7 +11,7 @@
   import { useQuery } from '@sveltestack/svelte-query';
   import Table from './Table.svelte';
   import { LightPaginationNav } from './pagination/index';
-  import { pages, fieldID, SearchTerm } from './store';
+  import { pages, SearchTerm } from './store';
 
   import DropdownActions from './DropdownActions.svelte';
   import ShowHideCols from './modal/ShowHideCols.svelte';
@@ -23,7 +23,6 @@
   let s;
   $: s = $SearchTerm.toLowerCase();
   $: page = $pages;
-  $: console.log(s);
   async function fetchPosts(s, page) {
     // const res = await fetch(`${url}?s=${s}&page=${page}&per_page=9&fields=-1`);
     const res = await fetch(
@@ -56,15 +55,12 @@
   $: totalPage = d?.totalPage;
   $: data = d?.data;
 
-  import { onMount } from 'svelte';
   import NoResult from './NoResult.svelte';
 
-  onMount(async () => parseScroll());
-
-  $: colDef = [
+  let colDef = [
     {
-      id: 'title',
       label: 'Title',
+      id: 'title',
       show: true,
       title: 'Title',
       headerComponent: Header,
@@ -105,15 +101,6 @@
       label: 'Webpage',
       show: false,
       title: 'WEBPAGE',
-      headerComponent: Header,
-      cellComponent: Webpage,
-      cellAs: 'td',
-    },
-    {
-      id: 'webpage_unlocked',
-      label: 'Webpage (Unlocked)',
-      show: false,
-      title: 'WEBPAGE UNLOCKED',
       headerComponent: Header,
       cellComponent: Webpage,
       cellAs: 'td',
@@ -183,7 +170,7 @@
     {
       id: 'client',
       label: 'Client',
-      show: false,
+      show: true,
       title: 'Client',
       headerComponent: Header,
       cellComponent: Hyperlink,
@@ -202,40 +189,52 @@
       headerComponent: Header,
       cellComponent: Textonly,
       cellAs: 'td',
-      args: { selector: 'acf.cs_client.lob' },
+      args: { selector: 'acf.cs_client.lob', center: false },
     },
   ];
+
   const ddaText = 'Table actions';
   const ddaActions = [
     { text: 'Edit columns', id: 'EDIT_COLUMNS' },
     { text: 'Coming soon...', id: 'COMING_SOON_1' },
     { text: 'Coming soon...', id: 'COMING_SOON_2' },
   ];
-  let show = false;
+
+  import { useModal } from './modal/Modal.svelte';
+
+  $: [show, hide] = useModal(
+    { title: 'Choose which columns you see' },
+    ShowHideCols,
+    {
+      cols: colDef,
+      onApply: handleApply,
+      onClose: handleClose,
+    }
+  );
+
+  function handleClose() {
+    hide();
+  }
+
+  function handleApply(detail) {
+    colDef = detail;
+    hide();
+    //let title = 'Choose which columns you see';
+    // let printCols = 'nayeon';
+    // printCols = JSON.stringify(colDef, null, 2);
+    // console.log(printCols);
+  }
 
   function handleDropdownAction({ text, id }) {
-    console.log(`${id}: ${text}`);
+    // console.log(`${id}: ${text}`);
 
     switch (id) {
       case 'EDIT_COLUMNS':
-        show = true;
+        show();
         break;
       default:
         break;
     }
-  }
-
-  let title = 'Choose which columns you see';
-  let printCols = 'nayeon';
-  function handleApply({ detail }) {
-    colDef = detail;
-    show = false;
-    printCols = JSON.stringify(colDef, null, 2);
-    console.log(printCols);
-  }
-
-  function handleClose({ detail }) {
-    show = false;
   }
 </script>
 
@@ -243,9 +242,9 @@
   <ModalPrev modalContent={PreviewSearchResult} />
 {/if} -->
 
-<Modal {title} bind:show>
+<!-- <Modal {title} bind:show>
   <ShowHideCols cols={colDef} on:apply={handleApply} on:cancel={handleClose} />
-</Modal>
+</Modal> -->
 
 <div class="top-wrapper">
   <div class="actionContainer">

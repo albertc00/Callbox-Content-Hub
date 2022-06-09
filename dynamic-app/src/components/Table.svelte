@@ -38,15 +38,10 @@
       {#if data}
         {#each data as row}
           <tr>
-            {#each colDef as { id, cellComponent, show, args } (id)}
+            {#each colDef as { cellComponent, show, args }}
               {#if show}
                 <td>
-                  <svelte:component
-                    this={cellComponent}
-                    post={row}
-                    {...args}
-                    {id}
-                  />
+                  <svelte:component this={cellComponent} post={row} {...args} />
                 </td>
               {/if}
             {/each}
@@ -118,8 +113,8 @@
     font-family: 'Work Sans', sans-serif;
     letter-spacing: initial;
     padding: 0.5rem;
-    white-space: nowrap;
+    /* white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis; */
   }
 </style>

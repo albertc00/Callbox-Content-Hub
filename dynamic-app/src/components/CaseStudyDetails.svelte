@@ -120,7 +120,8 @@
 <style>
   header h3 {
     font-size: 1.5rem;
-    line-height: 2rem;
+    line-height: 1rem;
+    padding-bottom: 10px;
   }
   .cs-wrapper {
     margin-bottom: 15px;
@@ -157,18 +158,18 @@
     line-height: 1.5rem;
     margin-bottom: 0;
   }
-  .wrapper-outer {
-    /* background-color: #f2f2f2; */
-    padding: 0;
-  }
 
   .wrapper-inner {
     padding-top: 20px;
-    width: 85%;
+    /* width: 85%; */
+    max-width: 60rem;
     margin: 0 auto;
-    padding: 20px;
+    padding: 5px 20px;
     border-radius: 5px;
     box-shadow: 0px 5px 9px rgb(0 0 0 / 30%);
     background-color: #fff;
+  }
+  .wrapper-outer {
+    padding: 0 20px;
   }
 </style>

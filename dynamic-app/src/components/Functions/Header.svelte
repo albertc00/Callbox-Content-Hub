@@ -2,6 +2,12 @@
   export let text;
 </script>
 
-<span>
+<span class="header">
   {text}
 </span>
+<!-- 
+<style>
+  .header {
+    text-transform: initial;
+  }
+</style> -->

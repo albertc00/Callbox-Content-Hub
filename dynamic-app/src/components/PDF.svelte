@@ -1,6 +1,4 @@
 <script>
-  export let id;
-
   import Button from './Button.svelte';
 
   export let post;

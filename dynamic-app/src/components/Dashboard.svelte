@@ -1,20 +1,11 @@
 <script>
-  import {
-    isSearching,
-    SearchTerm,
-    seeMore,
-    fields,
-    MoreField,
-    viewfield,
-  } from './store';
+  import { isSearching, SearchTerm, fields } from './store';
 
   function onClick() {
     $isSearching = false;
     $SearchTerm = '';
-    $seeMore = false;
+
     $fields = '';
-    $MoreField = false;
-    $viewfield = false;
   }
 </script>
 

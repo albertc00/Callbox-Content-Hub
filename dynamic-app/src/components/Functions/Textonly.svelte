@@ -3,12 +3,14 @@
   export let selector = 'text';
   export let center = true;
   const text = selector.split('.').reduce((prev, curr) => prev[curr], post);
+  console.log(text);
 </script>
 
 <div class:center>
   <span title={text} class="text">
     {@html text}
   </span>
+  <!-- <TextWithInfo {as} info={text}>{@html text}</TextWithInfo> -->
 </div>
 
 <style>
@@ -16,10 +18,9 @@
     text-align: center;
   }
 
-  span:hover {
+  div:hover {
     cursor: help;
   }
-
   .text {
     display: inline-block;
     width: 100%;

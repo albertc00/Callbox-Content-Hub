@@ -7,7 +7,7 @@
   import Table from './Table.svelte';
 
   import { useQuery } from '@sveltestack/svelte-query';
-  import { SearchTerm, fields, cols, pages, fieldID } from './store';
+  import { SearchTerm, fields, pages } from './store';
   import { LightPaginationNav } from './pagination/index.js';
   import NoResult from './NoResult.svelte';
   import FieldResultLoading from './FieldResultLoading.svelte';

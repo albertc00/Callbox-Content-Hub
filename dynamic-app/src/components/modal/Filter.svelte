@@ -1,40 +1,5 @@
 <script>
-  import { col } from '../SelectColumn';
-  import {
-    isSearching,
-    SearchTerm,
-    fields,
-    cols,
-    seecol,
-    MoreField,
-  } from '../store';
-  import { selects } from '../selection';
-  function handleOnSubmit() {
-    $isSearching = false;
-    $MoreField = true;
-
-    $cols = $cols;
-  }
 </script>
-
-<h2>Available</h2>
-<div class="dropdown">
-  <ul class="checbox-filters">
-    {#each selects as { n, id, label } (id)}
-      <li class="check-svelte">
-        <label class="filters">
-          <input
-            class="checkbox-svelte"
-            type="checkbox"
-            bind:group={$fields}
-            value={n}
-          />
-          <span class="checkbox-label" for={id}> {label} </span>
-        </label>
-      </li>
-    {/each}
-  </ul>
-</div>
 
 <style>
   ul {
