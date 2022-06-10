@@ -1,5 +1,6 @@
-@forward 'colors' as colors-*;
-@forward 'media-queries' as screen-*;
+@forward 'colors';
+@forward 'media';
+@forward 'text';
 
 @mixin reset() {
   :global(#top #svelte-root) {

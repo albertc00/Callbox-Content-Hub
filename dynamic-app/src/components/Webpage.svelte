@@ -6,7 +6,6 @@
 
 <div class="center">
   <Button href={webpage}>Gated</Button>
-
   <Button href={`${webpage}?user=benb`}>Unlocked</Button>
 </div>
 

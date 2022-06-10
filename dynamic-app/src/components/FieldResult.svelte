@@ -50,7 +50,6 @@
   $: isError = $queryResult.isError;
 
   import { onMount } from 'svelte';
-  import PreviewFieldResult from './PreviewFieldResult.svelte';
   import ModalPrev from './modal/ModalPrev.svelte';
 
   let box;
@@ -187,7 +186,6 @@
       headerComponent: Header,
       cellComponent: TableFunc,
       cellAs: 'td',
-      hidden: !$cols.includes('results'),
       args: { selector: 'results' },
     },
   ];
@@ -236,13 +234,13 @@
   />
 </svelte:head>
 
-{#if $fieldID > 0}
+<!-- {#if $fieldID > 0}
   <ModalPrev modalContent={PreviewFieldResult} />
-{/if}
+{/if} -->
 
-<Modal {title} bind:show>
+<!-- <Modal {title} bind:show>
   <ShowHideCols cols={colDef} on:apply={handleApply} on:cancel={handleClose} />
-</Modal>
+</Modal> -->
 
 <div class="top-wrapper">
   <div class="actionContainer">

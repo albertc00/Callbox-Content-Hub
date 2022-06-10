@@ -23,7 +23,6 @@
   const dispatch = createEventDispatcher();
 
   export let title = 'Modal';
-  // export let show = true;
 
   let Component = null;
 
@@ -47,8 +46,6 @@
     Component = null;
     dispatch('close');
   }
-
-  // let scroll = false;
 
   function bind(SlotComponent, props = {}) {
     return function (options) {
@@ -127,7 +124,6 @@
   }
 
   .modal {
-    /* margin-top: 15vh; */
     align-self: flex-start;
     background-color: #fff;
     border-radius: 0.25rem;

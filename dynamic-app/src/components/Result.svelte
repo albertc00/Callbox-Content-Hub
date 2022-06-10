@@ -8,6 +8,7 @@
   import Textonly from './Functions/Textonly.svelte';
   import Header from './Functions/Header.svelte';
   import TableFunc from './Functions/TableFunc.svelte';
+  import SearchForm from './SearchForm.svelte';
   import DropdownActions from './DropdownActions.svelte';
   import Hyperlink from './Functions/Hyperlink.svelte';
 
@@ -43,6 +44,7 @@
   $: isError = $queryResult.isError;
   $: totalPage = d?.totalPage;
   $: data = d?.data;
+  $: console.log(data);
 
   $: colDef = [
     {
@@ -60,9 +62,9 @@
       show: true,
       title: 'Product or Service',
       headerComponent: Header,
-      cellComponent: Textonly,
+      cellComponent: TextWithTooltip,
       cellAs: 'td',
-      args: { selector: 'acf.cs_client_industry' },
+      args: { selector: 'acf.cs_client_industry', center: false },
     },
     {
       id: 'targetLocation',
@@ -70,9 +72,9 @@
       show: true,
       title: 'Target Location',
       headerComponent: Header,
-      cellComponent: Textonly,
+      cellComponent: TextWithTooltip,
       cellAs: 'td',
-      args: { selector: 'acf.cs_target_location' },
+      args: { selector: 'acf.cs_target_location', center: false },
     },
     {
       id: 'pdf',
@@ -98,10 +100,10 @@
       show: false,
       title: 'TARGET DM',
       headerComponent: Header,
-      cellComponent: Textonly,
+      cellComponent: TextWithTooltip,
       cellAs: 'td',
 
-      args: { selector: 'acf.cs_target_dm' },
+      args: { selector: 'acf.cs_target_dm', center: false },
     },
     {
       id: 'target_industry',
@@ -109,10 +111,10 @@
       show: false,
       title: 'TARGET INDUSTRY',
       headerComponent: Header,
-      cellComponent: Textonly,
+      cellComponent: TextWithTooltip,
       cellAs: 'td',
 
-      args: { selector: 'acf.cs_target_industry' },
+      args: { selector: 'acf.cs_target_industry', center: false },
     },
     {
       id: 'client_location',
@@ -120,9 +122,9 @@
       show: false,
       title: 'CLIENT LOCATION',
       headerComponent: Header,
-      cellComponent: Textonly,
+      cellComponent: TextWithTooltip,
       cellAs: 'td',
-      args: { selector: 'acf.cs_client_location' },
+      args: { selector: 'acf.cs_client_location', center: false },
     },
     {
       id: 'client_HQ',
@@ -130,9 +132,9 @@
       show: false,
       title: 'CLIENT HQ',
       headerComponent: Header,
-      cellComponent: Textonly,
+      cellComponent: TextWithTooltip,
       cellAs: 'td',
-      args: { selector: 'acf.cs_client_hq' },
+      args: { selector: 'acf.cs_client_hq', center: false },
     },
     {
       id: 'campaign',
@@ -230,6 +232,7 @@
 
 <div class="top-wrapper">
   <div class="actionContainer">
+    <SearchForm />
     <DropdownActions
       text={ddaText}
       actions={ddaActions}
@@ -237,9 +240,6 @@
     />
   </div>
   <h2 class="table-label">Case Studies</h2>
-  <!-- <Query options={queryOptions}>
-    <div slot="query" let:queryResult={{ data, isFetching, isError }}> -->
-  <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
   <div class="cntnr">
     <div class="results svelte-fhxlyi">
       {#if isFetching || isLoading}
@@ -269,13 +269,11 @@
   </div>
 </div>
 
-<!-- </Query>
-</div> -->
 <style>
   .actionContainer {
     padding: 1rem 0;
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
     width: 98vw;
     margin: 0 auto;
   }

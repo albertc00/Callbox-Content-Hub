@@ -57,56 +57,23 @@
   @include app.reset;
 
   @include app.root {
-    main {
+    .divider {
+      color: app.colors('grey-150');
       text-align: center;
-      padding: 1rem;
-      max-width: 240px;
-      margin: 0 auto;
-
-      @include app.screen-sm {
-        max-width: none;
-      }
+      @include app.text('4xl');
+      height: 54px;
+    }
+    .navbar-selection {
+      top: 44px;
+      z-index: 200;
+      background-color: #014e89;
     }
 
-    h1 {
-      color: app.$colors-blue-400;
-      text-transform: uppercase;
-      font-size: 3.75rem;
-      line-height: 1;
+    .nav-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr max-content 50px 65px;
+      padding: 0 30px;
+      align-items: center;
     }
   }
-  .divider {
-    color: #f7f7f7;
-    text-align: center;
-    font-size: 40px;
-    height: 54px;
-  }
-  .navbar-selection {
-    top: 44px;
-    z-index: 200;
-    background-color: #014e89;
-  }
-
-  .nav-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr max-content 50px 65px;
-    padding: 0 30px;
-    align-items: center;
-  }
-  .close.svelte-17p2yix {
-    border: 0 none;
-    background: none;
-    padding-top: 15px;
-    padding-left: 58rem;
-    height: calc(36px + 2rem);
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background-color 0.4s ease-in-out;
-  }
-  .close.svelte-17p2yix > svg {
-    fill: #f7f7f7;
-  }
-  // .close.svelte-17p2yix:hover {
-  //   background-color: #e7e7e7;
-  // }
 </style>

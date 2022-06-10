@@ -2,7 +2,7 @@
   import { beforeUpdate } from 'svelte';
   import { fade } from 'svelte/transition';
 
-  export let as = 'p';
+  export let as = 'div';
   export let info;
   export let boundary;
 
@@ -31,12 +31,12 @@
 
   const tooltipID = uniqueId();
 
-  const boundaryRect = boundary.getBoundingClientRect();
+  const boundaryRect = boundary?.getBoundingClientRect();
   const {
     left: boundaryLeft,
     right: boundaryRight,
     bottom: boundaryBottom,
-  } = boundaryRect;
+  } = boundaryRect ?? {};
 
   let tooltipRef;
   $: tipRect = tooltipRef?.getBoundingClientRect();

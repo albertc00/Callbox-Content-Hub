@@ -15,10 +15,16 @@
   $: visible = colDef.filter(({ show }) => show);
   $: colCount = visible.length;
   $: excessCols = Math.max(colCount - maxCols, 0);
+
+  let rowRef;
+  $: rowHeight = rowRef?.offsetHeight;
 </script>
 
-<div class="table-wrapper" bind:this={wrapperRef}>
-  <!-- {#each tableData as { posts, id } (id)} -->
+<div
+  class="table-wrapper"
+  bind:this={wrapperRef}
+  style:max-height={`calc(${rowHeight}px * 11)`}
+>
   <table style:width={`calc(98vw + (250px * ${excessCols}))`}>
     <thead>
       <tr>
@@ -35,7 +41,7 @@
     <tbody>
       {#if data}
         {#each data as row}
-          <tr>
+          <tr bind:this={rowRef}>
             {#each colDef as { cellComponent, show, args }}
               {#if show}
                 <td>
@@ -62,57 +68,59 @@
   </table>
 </div>
 
-<style>
-  .table-wrapper {
-    overflow-y: scroll;
-    overflow-x: scroll;
-    width: 98vw;
-    margin: 0 auto;
-    max-height: calc(60px * 9);
-  }
+<style lang="scss">
+  @use '../styles/app';
 
-  table {
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
+  @include app.root {
+    .table-wrapper {
+      overflow-y: scroll;
+      overflow-x: scroll;
+      width: 98vw;
+      margin: 0 auto;
+    }
 
-  thead {
-    position: sticky;
-    top: 0px;
-    z-index: 999;
-    background-color: #014e89;
-    color: white;
-    border: 1px solid #014e89;
-    border-top: 0 none;
-  }
+    table {
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
 
-  thead th {
-    padding: 0.875rem;
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
-    font-size: 1rem;
-    line-height: 1.2rem;
-    text-align: center;
-  }
+    thead {
+      position: sticky;
+      top: 0px;
+      z-index: 999;
+      // background-color: #014e89;
+      // color: white;
+      // border: 1px solid #014e89;
+      border-top: 0 none;
+    }
 
-  tbody tr:hover {
-    background-color: #f2f2f2;
-  }
+    thead tr {
+      background-color: app.colors('grey-150');
+    }
 
-  tbody td {
-    font-size: 0.875rem;
-    font-family: 'Lora', 'Lato', sans-serif;
-    border: 1px solid #d9d9d9;
-  }
+    $cell-padding: 0.5rem 1rem;
 
-  td {
-    font-family: 'Work Sans', sans-serif;
-    letter-spacing: initial;
-    padding: 0.5rem;
-    /* white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; */
+    thead th {
+      padding: $cell-padding;
+      @include app.text('base');
+      font-family: 'Work Sans', sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.025em;
+      text-align: left;
+      color: app.colors('grey-900');
+      border: 1px solid app.colors('grey-200');
+      border-bottom-width: 2px;
+    }
+
+    tbody tr:hover {
+      background-color: app.colors('grey-100');
+    }
+
+    tbody td {
+      @include app.text('sm');
+      font-family: 'Lato', sans-serif;
+      border: 1px solid app.colors('grey-200');
+      padding: $cell-padding;
+    }
   }
 </style>

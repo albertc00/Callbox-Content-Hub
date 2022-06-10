@@ -14,15 +14,13 @@
   });
 </script>
 
-{#if selector === 'acf.cs_results'}
-  <div class="center">
+<div>
+  {#if selector === 'acf.cs_results'}
     <Button class="cs_button" on:click={() => show()}>Results</Button>
-  </div>
-{:else}
-  <div class="center">
+  {:else}
     <span>{text.map(({ label }) => label).join(', ')}</span>
-  </div>
-{/if}
+  {/if}
+</div>
 
 <!-- 
 {#if selector === 'acf.cs_results'}
@@ -52,8 +50,3 @@
   </div>
   </Modal>
 {/if} -->
-<style>
-  .center {
-    text-align: center;
-  }
-</style>

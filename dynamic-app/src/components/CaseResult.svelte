@@ -48,10 +48,6 @@
     margin: 0 auto;
   }
 
-  /* tr:hover {
-    background-color: #f1efef;
-  } */
-
   td,
   th {
     border: 1px solid #c4cbcf;
@@ -68,8 +64,6 @@
   }
 
   th {
-    /* color: #fff; */
-    /* background-color: #014e89; */
     background-color: #c4cbcf;
     color: #231f20;
     font-weight: 600;
@@ -78,7 +72,6 @@
     font-size: 1rem;
     line-height: 1.5rem;
     padding: 0.5rem;
-    /* min-width: 200px; */
     text-align: center;
   }
 </style>

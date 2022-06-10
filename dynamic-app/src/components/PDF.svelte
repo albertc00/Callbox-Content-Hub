@@ -2,6 +2,7 @@
   import Button from './Button.svelte';
 
   export let post;
+  export let center = false;
   let copied = false;
 
   const pdf = post.acf.cb_asset;
@@ -15,7 +16,7 @@
   };
 </script>
 
-<div class="center">
+<div class="wrapper" class:center>
   <Button href={pdf}>View PDF</Button>
 
   <Button on:click={copy}>
@@ -27,12 +28,18 @@
   </Button>
 </div>
 
-<style>
-  .center {
-    display: grid;
-    grid-template-columns: max-content max-content;
-    gap: 0.5rem;
-    text-align: center;
-    justify-content: center;
+<style lang="scss">
+  @use '../styles/app';
+
+  @include app.root {
+    .wrapper {
+      display: grid;
+      grid-template-columns: max-content max-content;
+      gap: 0.5rem;
+
+      &.center {
+        justify-content: center;
+      }
+    }
   }
 </style>

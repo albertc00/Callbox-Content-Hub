@@ -10,9 +10,6 @@
 </script>
 
 <div class:center>
-  <!-- <span title={text} class="text">
-      {@html text}
-    </span> -->
   <TextWithInfo {as} info={text} boundary={$boundary}>{@html text}</TextWithInfo
   >
 </div>
@@ -21,15 +18,4 @@
   .center {
     text-align: center;
   }
-
-  /* div:hover {
-      cursor: help;
-    }
-    .text {
-      display: inline-block;
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    } */
 </style>

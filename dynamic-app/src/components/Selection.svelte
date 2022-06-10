@@ -8,7 +8,6 @@
   $: s = $SearchTerm.toLowerCase();
 
   $: field = $fields;
-  $: console.log(s.len);
   const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
   async function fetchPosts({ page = 1, s, field }) {
     const res = await fetch(

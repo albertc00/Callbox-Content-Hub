@@ -1,30 +1,28 @@
 <script>
   export let post;
   export let selector = 'text';
-  export let center = true;
+  export let center = false;
   const text = selector.split('.').reduce((prev, curr) => prev[curr], post);
-  console.log(text);
 </script>
 
-<div class:center>
-  <span title={text} class="text">
-    {@html text}
-  </span>
+<div class="text" class:center>
+  {@html text}
 </div>
 
-<style>
-  .center {
-    text-align: center;
-  }
+<style lang="scss">
+  @use '../../styles/app';
 
-  div:hover {
-    cursor: help;
-  }
-  .text {
-    display: inline-block;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  @include app.root {
+    .text {
+      display: inline-block;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &.center {
+        text-align: center;
+      }
+    }
   }
 </style>
