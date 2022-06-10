@@ -33,11 +33,11 @@
           <SearchForm />
           <FieldResult />
         {:else} -->
-        <SearchForm />
+        <!-- <SearchForm /> -->
         <SearchResult />
         <!-- {/if} -->
       {:else}
-        <SearchForm />
+        <!-- <SearchForm /> -->
         <Result />
       {/if}
       <Modal />
