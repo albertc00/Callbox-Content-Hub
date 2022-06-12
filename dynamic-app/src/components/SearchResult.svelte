@@ -15,7 +15,7 @@
 
   import DropdownActions from './DropdownActions.svelte';
   import ShowHideCols from './modal/ShowHideCols.svelte';
-  import Modal from './modal/Modal.svelte';
+  import SearchForm from './SearchForm.svelte';
 
   // const url = `https://www.callboxinc.com/wp-json/cbtk/v1/case-studies`;
 
@@ -247,14 +247,15 @@
 </Modal> -->
 
 <div class="top-wrapper">
+  <h2 class="table-label">Case Studies</h2>
   <div class="actionContainer">
+    <SearchForm />
     <DropdownActions
       text={ddaText}
       actions={ddaActions}
       onAction={handleDropdownAction}
     />
   </div>
-  <h2 class="table-label">Case Studies</h2>
 
   <div class="cntnr">
     <div class="results svelte-fhxlyi">
@@ -407,36 +408,42 @@
     args: { selector: 'results' },
   },
 ]; -->
-<style>
-  .actionContainer {
-    padding: 1rem 0;
-    display: flex;
-    justify-content: right;
-    width: 98vw;
-    margin: 0 auto;
-  }
-  .top-wrapper {
-    background-color: #f7f7f7;
-  }
-  .table-label {
-    position: absolute;
-    top: 5.5rem;
-    left: 3rem;
-    font-family: 'open Sans', sans-serif;
-    font-weight: 650;
-    font-size: 2rem;
-  }
+<style lang="scss">
+  @use '../styles/app';
 
-  .table-container {
-    width: 100%;
-    margin: auto;
-  }
+  @include app.root {
+    .actionContainer {
+      padding: 1rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 98vw;
+      margin: 0 auto;
+    }
 
-  .area-2 {
-    grid-column-start: 2;
-    display: flex;
-    justify-content: flex-start;
-    padding-top: 20px;
-    padding-left: 25px;
+    .top-wrapper {
+      background-color: #f7f7f7;
+    }
+
+    .table-label {
+      @include app.text('3xl');
+      font-family: 'Work Sans', sans-serif;
+      font-weight: 600;
+      margin: 1.5rem 0 1.5rem 1vw;
+    }
+
+    .table-container {
+      overflow: auto;
+      width: 100%;
+      margin: auto;
+    }
+
+    .area-2 {
+      grid-column-start: 2;
+      display: flex;
+      justify-content: flex-start;
+      padding-top: 20px;
+      padding-left: 25px;
+    }
   }
 </style>
