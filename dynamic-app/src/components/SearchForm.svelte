@@ -12,9 +12,7 @@
   let show = false;
 </script>
 
-<div class="wrapper-spacer" />
 <div class="wrapper-bar">
-  <div class="menubar" />
   <!-- <button class="menubar" on:click={() => (show = true)}>
     <div class="menubarlabel">
       <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48"
@@ -27,9 +25,9 @@
   </Modal> -->
 
   <form class="form" on:submit|preventDefault={handleOnSubmit}>
-    <div class="wrapper svelte-iqmikt">
+    <div class="wrapper">
       <input
-        class="searchBox svelte-iqmikt"
+        class="searchBox"
         type="search"
         name="search"
         spellcheck="true"
@@ -40,7 +38,7 @@
       />
 
       <button
-        class="button svelte-iqmikt"
+        class="button"
         disabled={$SearchTerm === ''}
         type="submit"
         aria-label="Start search"
@@ -61,74 +59,67 @@
   </form>
 </div>
 
-<style>
-  .wrapper-bar {
-    display: grid;
-    grid-template-columns: max-content 370px;
-    align-items: center;
-    padding-top: 15px;
-    justify-content: end;
-    background-color: #f7f7f7;
-  }
-  .menubar {
-    background: none;
-    border: 0;
+<style lang="scss">
+  @use '../styles/app';
 
-    cursor: pointer;
-  }
-  /* .menulabel {
-    color: #231f20;
-    font-family: 'open Sans', sans-serif;
-    font-weight: 400;
-    font-size: 1.15rem;
-  }
-  .menubarlabel {
-    display: grid;
-    grid-template-columns: 2fr 3fr;
-    align-items: center;
-  } */
+  @include app.root {
+    .wrapper-bar {
+      flex-basis: 280px;
+    }
 
-  .form {
-    max-width: 350px;
-    width: 100%;
+    .form {
+      // max-width: 350px;
+      width: 100%;
+    }
 
-    padding: 10px;
-  }
-  .wrapper.svelte-iqmikt {
-    position: relative;
-    border-radius: 0.375rem;
-    background: #fff;
-  }
-  .searchBox.svelte-iqmikt {
-    display: inline-block;
-    width: 100%;
-    padding: 0.75rem 2.875rem 0.75rem 0.75rem;
-    margin: 0;
-    font-family: 'Lato', sans-serif;
-    font-size: 1.125rem;
-    color: #5f7380;
-    border: 1px solid #c4cbcf;
-    border-radius: 0.375rem;
-    box-shadow: 0px 8px 9px -6px rgb(95 115 128 / 44%);
-  }
-  .button.svelte-iqmikt {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 2.875rem;
-    width: 2.875rem;
-    padding: 0;
-    background: none;
-    border: 0 none;
-    border-radius: 0 0.375rem 0.375rem 0;
-    padding: 0.6875rem;
-    cursor: pointer;
-  }
-  .button.svelte-iqmikt:disabled {
-    cursor: not-allowed;
-  }
+    .wrapper {
+      position: relative;
+      border-radius: 0.375rem;
+      background: #fff;
+    }
 
-  .button.svelte-iqmikt:disabled > svg {
-    fill: #c4cbcf;
+    .searchBox {
+      display: inline-block;
+      width: 100%;
+      padding: 0.5rem 2.375rem 0.5rem 0.75rem;
+      margin: 0;
+      font-family: 'Lato', sans-serif;
+      @include app.text('sm');
+      color: app.colors('grey-400');
+      border: 1px solid app.colors('grey-200');
+      border-radius: 0.375rem;
+      // box-shadow: 0px 8px 9px -6px rgb(95 115 128 / 44%);
+
+      &:focus {
+        outline: 0 none;
+      }
+    }
+
+    .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      right: 0;
+      top: 0;
+      // height: 2.875rem;
+      // width: 2.875rem;
+      height: calc(2.25rem + 2px);
+      width: 2.375rem;
+      padding: 0;
+      background: none;
+      border: 0 none;
+      border-radius: 0 0.375rem 0.375rem 0;
+      padding: calc((2.25rem - 24px) / 2);
+      cursor: pointer;
+    }
+
+    .button:disabled {
+      cursor: not-allowed;
+    }
+
+    .button:disabled > svg {
+      fill: #c4cbcf;
+    }
   }
 </style>

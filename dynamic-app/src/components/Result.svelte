@@ -231,6 +231,7 @@
 </Modal> -->
 
 <div class="top-wrapper">
+  <h2 class="table-label">Case Studies</h2>
   <div class="actionContainer">
     <SearchForm />
     <DropdownActions
@@ -239,9 +240,8 @@
       onAction={handleDropdownAction}
     />
   </div>
-  <h2 class="table-label">Case Studies</h2>
   <div class="cntnr">
-    <div class="results svelte-fhxlyi">
+    <div class="results">
       {#if isFetching || isLoading}
         <div class="table-container">
           <Table data={null} {colDef} />
@@ -269,39 +269,42 @@
   </div>
 </div>
 
-<style>
-  .actionContainer {
-    padding: 1rem 0;
-    display: flex;
-    justify-content: space-between;
-    width: 98vw;
-    margin: 0 auto;
-  }
+<style lang="scss">
+  @use '../styles/app';
 
-  .top-wrapper {
-    background-color: #f7f7f7;
-  }
+  @include app.root {
+    .table-label {
+      @include app.text('3xl');
+      font-family: 'Work Sans', sans-serif;
+      font-weight: 600;
+      margin: 1.5rem 0 1.5rem 1vw;
+    }
 
-  .table-label {
-    position: absolute;
-    top: 7rem;
-    left: 3rem;
-    font-family: 'open Sans', sans-serif;
-    font-weight: 650;
-    font-size: 2rem;
-  }
+    .actionContainer {
+      padding: 1rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 98vw;
+      margin: 0 auto;
+    }
 
-  .table-container {
-    overflow: auto;
-    width: 100%;
-    margin: auto;
-  }
+    .top-wrapper {
+      background-color: #f7f7f7;
+    }
 
-  .area-2 {
-    grid-column-start: 2;
-    display: flex;
-    justify-content: flex-start;
-    padding-top: 15px;
-    padding-left: 25px;
+    .table-container {
+      overflow: auto;
+      width: 100%;
+      margin: auto;
+    }
+
+    .area-2 {
+      grid-column-start: 2;
+      display: flex;
+      justify-content: flex-start;
+      padding-top: 15px;
+      padding-left: 25px;
+    }
   }
 </style>

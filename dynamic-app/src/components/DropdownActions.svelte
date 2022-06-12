@@ -67,7 +67,9 @@
   {/if}
 </div>
 
-<style>
+<style lang="scss">
+  @use '../styles/app';
+
   .dda {
     position: relative;
   }
@@ -83,11 +85,11 @@
     background-color: #fff;
     align-items: center;
     margin: 0;
-    padding: 0.25rem 0.875rem;
+    padding: 0.375rem 0.5rem 0.375rem 0.875rem;
     border: 1px solid #b1b1b1;
     border-radius: 0.25rem;
     color: #5f7380;
-    font-size: 0.8rem;
+    @include app.text('sm');
   }
 
   svg {
@@ -118,7 +120,7 @@
     margin: 0;
     padding: 0.375rem 0.875rem;
     text-align: left;
-    font-size: 0.875rem;
+    @include app.text('sm');
     white-space: nowrap;
     color: #5f7380;
     border: 0 none;
