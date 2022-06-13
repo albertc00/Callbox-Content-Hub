@@ -23,7 +23,7 @@
 
   $: page = $pages;
   async function fetchPosts(page) {
-    const res = await fetch(`${url}?_embed&tags=1220&page=${page}&per_page=9`);
+    const res = await fetch(`${url}?_embed&tags=1220&page=${page}&per_page=10`);
 
     const totalPage = res.headers.get('x-wp-total');
 
@@ -44,7 +44,6 @@
   $: isError = $queryResult.isError;
   $: totalPage = d?.totalPage;
   $: data = d?.data;
-  $: console.log(data);
 
   $: colDef = [
     {
@@ -224,14 +223,30 @@
         break;
     }
   }
+
+  import { category } from './store';
+
+  const selec = [
+    { id: 1, label: 'Case Studies' },
+    { id: 2, label: 'Coming Soon...' },
+    { id: 3, label: 'Coming Soon...' },
+  ];
 </script>
 
-<!-- <Modal {title} bind:show>
-  <ShowHideCols cols={colDef} on:apply={handleApply} on:cancel={handleClose} />
-</Modal> -->
-
 <div class="top-wrapper">
-  <h2 class="table-label">Case Studies</h2>
+  <select class="content-type" bind:value={$category}>
+    {#each selec as { id, label } (id)}
+      <option value={id} disabled={label == 'Coming Soon...'}>
+        {label}
+      </option>
+    {/each}
+  </select>
+
+  <!-- <select class="content-type">
+    <option value="case_study">Case Studies</option>
+    <option value="blog">Blog</option>
+  </select> -->
+  <!-- <h2 class="table-label">Case Studies</h2> -->
   <div class="actionContainer">
     <SearchForm />
     <DropdownActions
@@ -274,10 +289,33 @@
 
   @include app.root {
     .table-label {
-      @include app.text('3xl');
+      @include app.text('2xl');
       font-family: 'Work Sans', sans-serif;
       font-weight: 600;
       margin: 1.5rem 0 1.5rem 1vw;
+    }
+
+    .content-type {
+      @include app.text('2xl');
+      font-family: 'Work Sans', sans-serif;
+      font-weight: 500;
+      margin: 1.5rem 0 1.5rem 1vw;
+      padding: 0.375rem 0rem;
+      border: 0 none;
+      // border-bottom: 2px solid app.colors('blue-400');
+      color: app.colors('blue-400');
+      background-color: transparent;
+      cursor: pointer;
+
+      &:active,
+      &:focus {
+        outline: 0 none;
+      }
+
+      option {
+        @include app.text('base');
+        color: app.colors('grey-900');
+      }
     }
 
     .actionContainer {

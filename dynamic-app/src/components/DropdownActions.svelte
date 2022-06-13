@@ -90,6 +90,7 @@
     border-radius: 0.25rem;
     color: #5f7380;
     @include app.text('sm');
+    font-family: 'Lato', sans-serif;
   }
 
   svg {
@@ -121,6 +122,7 @@
     padding: 0.375rem 0.875rem;
     text-align: left;
     @include app.text('sm');
+    font-family: 'Lato', sans-serif;
     white-space: nowrap;
     color: #5f7380;
     border: 0 none;

@@ -107,60 +107,69 @@
   {/if}
 </div>
 
-<style>
-  .wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
+<style lang="scss">
+  @use '../../styles/app';
 
-  .text {
-    margin: 0;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  @include app.root {
+    .wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
 
-  .icon-wrapper {
-    display: inline-flex;
-    align-items: center;
-    position: relative;
-    cursor: help;
-  }
+    .text {
+      margin: 0;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-  .icon {
-    fill: #728896;
-  }
+    .icon-wrapper {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      cursor: help;
+    }
 
-  .checked .icon,
-  .hovered .icon {
-    /* 		fill: #14b37d; */
-    fill: #196fd9;
-  }
+    .icon {
+      fill: #728896;
 
-  .check {
-    position: fixed;
-    left: -9999px;
-    top: 0;
-  }
+      &:focus,
+      &:active {
+        outline: 1px app.colors('blue-300');
+      }
+    }
 
-  .tip {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    z-index: 9999;
-    border: 0 none;
-    border-radius: 0.25rem;
-    padding: 0.75rem;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    /* 		white-space: normal; */
-    /* 		word-break: break-word; */
-    width: 120%;
-    max-width: max-content;
-    background-color: #fff;
-    box-shadow: rgba(0, 0, 0, 0.3) 0 2px 10px;
+    .checked .icon,
+    .hovered .icon {
+      /* 		fill: #14b37d; */
+      fill: #196fd9;
+    }
+
+    .check {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+    }
+
+    .tip {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      z-index: 9999;
+      border: 0 none;
+      border-radius: 0.25rem;
+      padding: 0.75rem;
+      font-size: 0.75rem;
+      line-height: 1rem;
+      /* 		white-space: normal; */
+      /* 		word-break: break-word; */
+      width: 120%;
+      max-width: max-content;
+      background-color: #fff;
+      box-shadow: rgba(0, 0, 0, 0.3) 0 2px 10px;
+    }
   }
 </style>

@@ -1,11 +1,10 @@
 <script>
-  import { SearchTerm, selection, fields, category, pages } from './store';
+  import { category } from './store';
 
   const selec = [
     { id: 1, label: 'Case Studies' },
-    { id: 2, label: 'Blog' },
+    { id: 2, label: 'Coming Soon...' },
     { id: 3, label: 'Coming Soon...' },
-    { id: 4, label: 'Coming Soon...' },
   ];
 </script>
 

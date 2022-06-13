@@ -6,12 +6,9 @@
   import FieldResult from './FieldResult.svelte';
   import SearchResult from './SearchResult.svelte';
   import Dashboard from './Dashboard.svelte';
-  import ContentSelector from './ContentSelector.svelte';
-  import UserAccount from './UserAccount.svelte';
   import BlogResult from './Blog/BlogResult.svelte';
   import BlogSearchResult from './Blog/BlogSearchResult.svelte';
   import Modal from './modal/Modal.svelte';
-  import Skeleton from './Functions/Skeleton.svelte';
   const queryClient = new QueryClient();
 </script>
 
@@ -23,9 +20,6 @@
     <div class="navbar-selection">
       <div class="nav-wrapper">
         <Dashboard />
-        <ContentSelector />
-        <div class="divider">|</div>
-        <UserAccount />
       </div>
     </div>
     {#if $category == 1}
@@ -35,12 +29,12 @@
         <Result />
       {/if}
       <Modal />
-    {:else if $category == 2}
+      <!-- {:else if $category == 2}
       {#if $isSearching}
         <BlogSearchResult />
       {:else}
         <BlogResult />
-      {/if}
+      {/if} -->
     {/if}
   </div>
 </QueryClientProvider>

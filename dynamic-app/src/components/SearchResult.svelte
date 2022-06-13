@@ -219,10 +219,6 @@
   function handleApply(detail) {
     colDef = detail;
     hide();
-    //let title = 'Choose which columns you see';
-    // let printCols = 'nayeon';
-    // printCols = JSON.stringify(colDef, null, 2);
-    // console.log(printCols);
   }
 
   function handleDropdownAction({ text, id }) {
@@ -237,14 +233,6 @@
     }
   }
 </script>
-
-<!-- {#if $fieldID > 0}
-  <ModalPrev modalContent={PreviewSearchResult} />
-{/if} -->
-
-<!-- <Modal {title} bind:show>
-  <ShowHideCols cols={colDef} on:apply={handleApply} on:cancel={handleClose} />
-</Modal> -->
 
 <div class="top-wrapper">
   <h2 class="table-label">Case Studies</h2>
