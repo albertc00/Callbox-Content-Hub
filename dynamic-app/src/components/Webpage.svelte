@@ -4,17 +4,15 @@
   let webpage = post.link;
 </script>
 
-<div class="center">
+<div class="webpage">
   <Button href={webpage}>Gated</Button>
   <Button href={`${webpage}?user=benb`}>Unlocked</Button>
 </div>
 
-<style>
-  .center {
+<style lang="scss">
+  .webpage {
     display: grid;
     grid-template-columns: max-content max-content;
     gap: 0.5rem;
-    text-align: center;
-    justify-content: center;
   }
 </style>

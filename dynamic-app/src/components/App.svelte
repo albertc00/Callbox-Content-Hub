@@ -11,6 +11,7 @@
   import BlogResult from './Blog/BlogResult.svelte';
   import BlogSearchResult from './Blog/BlogSearchResult.svelte';
   import Modal from './modal/Modal.svelte';
+  import Skeleton from './Functions/Skeleton.svelte';
   const queryClient = new QueryClient();
 </script>
 
@@ -29,15 +30,8 @@
     </div>
     {#if $category == 1}
       {#if $isSearching}
-        <!-- {#if $fields.length}
-          <SearchForm />
-          <FieldResult />
-        {:else} -->
-        <!-- <SearchForm /> -->
         <SearchResult />
-        <!-- {/if} -->
       {:else}
-        <!-- <SearchForm /> -->
         <Result />
       {/if}
       <Modal />

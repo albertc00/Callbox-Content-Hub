@@ -303,8 +303,7 @@
       grid-column-start: 2;
       display: flex;
       justify-content: flex-start;
-      padding-top: 15px;
-      padding-left: 25px;
+      padding-top: 20px;
     }
   }
 </style>

@@ -443,7 +443,6 @@
       display: flex;
       justify-content: flex-start;
       padding-top: 20px;
-      padding-left: 25px;
     }
   }
 </style>

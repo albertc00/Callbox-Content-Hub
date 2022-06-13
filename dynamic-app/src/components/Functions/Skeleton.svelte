@@ -18,7 +18,7 @@
     height: calc(
       0.875rem + 0.75rem + 0.125rem
     ); /* font-size _ padding top and bottom */
-    width: 233px;
+    max-width: 217px;
     font-size: 0.75rem; /* 12px */
     line-height: 1rem; /* 16px */
     background: #eee;
