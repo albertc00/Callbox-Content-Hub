@@ -26,7 +26,7 @@
   async function fetchPosts(s, page) {
     // const res = await fetch(`${url}?s=${s}&page=${page}&per_page=9&fields=-1`);
     const res = await fetch(
-      `${url}?_embed&search=${s}&tags=1220&page=${page}&per_page=9`
+      `${url}?_embed&search=${s}&tags=1220&page=${page}&per_page=10`
     );
 
     const totalPage = res.headers.get('x-wp-total');

@@ -8,7 +8,7 @@
   // const ids = new Set();
   // res.flatMap(({ posts }) => posts).filter(({ id }) => ids.has(id) ? false : ids.add(id));
 
-  const dummyRows = [{}, {}, {}, {}, {}, {}, {}, {}, {}];
+  const dummyRows = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
 
   const mql = window.matchMedia('(min-width: 1281px)');
   $: maxCols = mql.matches ? 6 : 5;
@@ -28,7 +28,7 @@
   <table style:width={`calc(98vw + (250px * ${excessCols}))`}>
     <thead>
       <tr>
-        {#each colDef as { title, headerComponent, show }, i (i)}
+        {#each colDef as { id, title, headerComponent, show } (id)}
           {#if show}
             <th>
               <svelte:component this={headerComponent} text={title} />
@@ -42,7 +42,7 @@
       {#if data}
         {#each data as row}
           <tr bind:this={rowRef}>
-            {#each colDef as { cellComponent, show, args }}
+            {#each colDef as { id, cellComponent, show, args } (id)}
               {#if show}
                 <td>
                   <svelte:component this={cellComponent} post={row} {...args} />
@@ -101,12 +101,13 @@
     $cell-padding: 0.5rem 1rem;
 
     thead th {
-      padding: $cell-padding;
-      @include app.text('base');
+      padding: 0.625rem 1rem;
+      @include app.text('sm');
       font-family: 'Work Sans', sans-serif;
       font-weight: 500;
       letter-spacing: 0.025em;
       text-align: left;
+      text-transform: uppercase;
       color: app.colors('grey-900');
       border: 1px solid app.colors('grey-200');
       border-bottom-width: 2px;

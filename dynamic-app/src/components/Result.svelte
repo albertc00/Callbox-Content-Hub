@@ -5,7 +5,6 @@
   import Title from './Title.svelte';
   import Webpage from './Webpage.svelte';
 
-  import Textonly from './Functions/Textonly.svelte';
   import Header from './Functions/Header.svelte';
   import TableFunc from './Functions/TableFunc.svelte';
   import SearchForm from './SearchForm.svelte';
@@ -16,6 +15,7 @@
   import Table from './Table.svelte';
   import { LightPaginationNav } from './pagination/index';
   import { pages, boundary } from './store';
+  import Filter from './Filter.svelte';
 
   import ShowHideCols from './modal/ShowHideCols.svelte';
 
@@ -188,6 +188,7 @@
     { text: 'Coming soon...', id: 'COMING_SOON_2' },
   ];
 
+  //showhidecols
   $: [show, hide] = useModal(
     { title: 'Choose which columns you see' },
     ShowHideCols,
@@ -210,7 +211,27 @@
     // printCols = JSON.stringify(colDef, null, 2);
     // console.log(printCols);
   }
+  //showhidecols
+  $: filters = [];
 
+  function handleApplyFilters(detail) {
+    filters = detail;
+    hide();
+  }
+  function handleCancel() {
+    hide();
+  }
+
+  // filters
+  $: [showfilters] = useModal({ title: 'Choose Filters' }, Filter, {
+    properties: colDef.map(({ id, label }) => ({ id, label })),
+    exclude: ['pdf', 'webpage', 'results', ...filters.map(({ id }) => id)],
+    onClose: handleCancel,
+    onApply: handleApplyFilters,
+    filters: filters,
+  });
+
+  //filters
   function handleDropdownAction({ text, id }) {
     // console.log(`${id}: ${text}`);
 
@@ -242,13 +263,22 @@
     {/each}
   </select>
 
-  <!-- <select class="content-type">
-    <option value="case_study">Case Studies</option>
-    <option value="blog">Blog</option>
-  </select> -->
-  <!-- <h2 class="table-label">Case Studies</h2> -->
   <div class="actionContainer">
-    <SearchForm />
+    <div class="search">
+      <div class="search-wrapper">
+        <SearchForm />
+      </div>
+
+      <button class="filter" on:click={() => showfilters()}>
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20"
+          ><path
+            d="M2.5 15.833V14.083H7.667V15.833ZM2.5 5.917V4.167H10.771V5.917ZM9.208 17.5V12.438H10.958V14.083H17.5V15.833H10.958V17.5ZM5.917 12.542V10.875H2.5V9.125H5.917V7.479H7.667V12.542ZM9.208 10.875V9.125H17.5V10.875ZM12.333 7.562V2.5H14.083V4.167H17.5V5.917H14.083V7.562Z"
+          /></svg
+        >
+        <span>Filters ({filters.length})</span>
+      </button>
+    </div>
+
     <DropdownActions
       text={ddaText}
       actions={ddaActions}
@@ -302,10 +332,12 @@
       margin: 1.5rem 0 1.5rem 1vw;
       padding: 0.375rem 0rem;
       border: 0 none;
+
       // border-bottom: 2px solid app.colors('blue-400');
       color: app.colors('blue-400');
       background-color: transparent;
       cursor: pointer;
+      max-width: 180px;
 
       &:active,
       &:focus {
@@ -325,6 +357,34 @@
       align-items: center;
       width: 98vw;
       margin: 0 auto;
+    }
+
+    .search {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .search-wrapper {
+      min-width: 280px;
+    }
+
+    .filter {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
+      border: 0 none;
+      padding: 0;
+      background: transparent;
+      @include app.text('sm');
+      font-family: 'Lato', sans-serif;
+      font-weight: 500;
+      color: app.colors('blue-350');
+      cursor: pointer;
+
+      svg {
+        fill: app.colors('blue-350');
+      }
     }
 
     .top-wrapper {

@@ -4,6 +4,7 @@
   export let as = 'p';
   export let links;
   export let favicon = true;
+  export let iconSize = 16;
 
   const text =
     texts.split('.').reduce((prev, curr) => prev?.[curr], post) ?? '';
@@ -17,10 +18,10 @@
       {#if favicon}
         <img
           class="favicon"
-          src={`https://s2.googleusercontent.com/s2/favicons?domain_url=${link}`}
+          src={`https://s2.googleusercontent.com/s2/favicons?domain=${link}`}
           alt="Company logo"
-          width="16"
-          height="16"
+          width={iconSize}
+          height={iconSize}
           loading="lazy"
         />
       {/if}
@@ -47,7 +48,7 @@
 
     .favicon {
       display: inline-flex;
-      gap: 0.5rem;
+      gap: 0.75rem;
       align-items: center;
     }
   }

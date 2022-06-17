@@ -116,6 +116,7 @@
       display: flex;
       align-items: center;
       gap: 0.25rem;
+      width: 100%;
     }
 
     .text {

@@ -1,19 +1,12 @@
 <script>
   import { isSearching, SearchTerm, fields } from './store';
-
   function handleOnSubmit() {
     $isSearching = true;
     $fields = $fields;
   }
-
-  import Filter from './modal/Filter.svelte';
-  import Modal from './modal/Modal.svelte';
-
-  let show = false;
 </script>
 
-<div class="wrapper-bar">
-  <!-- <button class="menubar" on:click={() => (show = true)}>
+<!-- <button class="menubar" on:click={() => (show = true)}>
     <div class="menubarlabel">
       <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48"
         ><path d="M20 36V33H28V36ZM6 15V12H42V15ZM12 25.5V22.5H36V25.5Z" /></svg
@@ -24,49 +17,44 @@
     <Filter />
   </Modal> -->
 
-  <form class="form" on:submit|preventDefault={handleOnSubmit}>
-    <div class="wrapper">
-      <input
-        class="searchBox"
-        type="search"
-        name="search"
-        spellcheck="true"
-        placeholder="Type keywords to find case studies"
-        aria-label="Search case studies"
-        bind:value={$SearchTerm}
-        required
-      />
+<form class="form" on:submit|preventDefault={handleOnSubmit}>
+  <div class="wrapper">
+    <input
+      class="searchBox"
+      type="search"
+      name="search"
+      spellcheck="true"
+      placeholder="Type keywords to find case studies"
+      aria-label="Search case studies"
+      bind:value={$SearchTerm}
+      required
+    />
 
-      <button
-        class="button"
-        disabled={$SearchTerm === ''}
-        type="submit"
-        aria-label="Start search"
-        title="Click to search"
-        ><svg
-          class="icon"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="black"
-          width="24px"
-          height="24px"
-          ><path d="M0 0h24v24H0z" fill="none" /><path
-            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-          /></svg
-        ></button
-      >
-    </div>
-  </form>
-</div>
+    <button
+      class="button"
+      disabled={$SearchTerm === ''}
+      type="submit"
+      aria-label="Start search"
+      title="Click to search"
+      ><svg
+        class="icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="black"
+        width="24px"
+        height="24px"
+        ><path d="M0 0h24v24H0z" fill="none" /><path
+          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+        /></svg
+      ></button
+    >
+  </div>
+</form>
 
 <style lang="scss">
   @use '../styles/app';
 
   @include app.root {
-    .wrapper-bar {
-      flex-basis: 280px;
-    }
-
     .form {
       // max-width: 350px;
       width: 100%;

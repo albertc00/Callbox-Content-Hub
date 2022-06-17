@@ -27,6 +27,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   .title-prev {
     display: none;
   }
