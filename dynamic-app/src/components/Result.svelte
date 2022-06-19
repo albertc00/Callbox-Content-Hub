@@ -211,8 +211,8 @@
     // printCols = JSON.stringify(colDef, null, 2);
     // console.log(printCols);
   }
-  //showhidecols
-  $: filters = [];
+
+  let filters = [];
 
   function handleApplyFilters(detail) {
     filters = detail;
@@ -220,6 +220,9 @@
   }
   function handleCancel() {
     hide();
+  }
+  function handleClearAll() {
+    filters = [];
   }
 
   // filters
@@ -278,7 +281,7 @@
         <span>Filters ({filters.length})</span>
       </button>
       {#if filters.length}
-        <button> Clear all </button>
+        <button class="clear" on:click={handleClearAll}> Clear all </button>
       {/if}
     </div>
 
@@ -388,6 +391,20 @@
       svg {
         fill: app.colors('blue-350');
       }
+    }
+
+    .clear {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
+      border: 0 none;
+      padding: 0;
+      background: transparent;
+      @include app.text('sm');
+      font-family: 'Lato', sans-serif;
+      font-weight: 500;
+      color: app.colors('blue-350');
+      cursor: pointer;
     }
 
     .top-wrapper {
