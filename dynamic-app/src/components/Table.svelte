@@ -25,7 +25,7 @@
   bind:this={wrapperRef}
   style:max-height={`calc(${rowHeight}px * 11)`}
 >
-  <table style:width={`calc(98vw + (250px * ${excessCols}))`}>
+  <table style:width={`calc(98vw + (250px * ${excessCols}))`} cellspacing="0">
     <thead>
       <tr>
         {#each colDef as { id, title, headerComponent, show } (id)}
@@ -77,10 +77,12 @@
       overflow-x: scroll;
       width: 98vw;
       margin: 0 auto;
+      border-top: 1px solid app.colors('grey-200');
+      border-left: 1px solid app.colors('grey-200');
     }
 
     table {
-      border-collapse: collapse;
+      border-collapse: separate;
       table-layout: fixed;
     }
 
@@ -88,9 +90,6 @@
       position: sticky;
       top: 0px;
       z-index: 999;
-      // background-color: #014e89;
-      // color: white;
-      // border: 1px solid #014e89;
       border-top: 0 none;
     }
 
@@ -110,7 +109,18 @@
       text-transform: uppercase;
       color: app.colors('grey-900');
       border: 1px solid app.colors('grey-200');
+
+      border-top-width: 0;
+      border-right-width: 0;
       border-bottom-width: 2px;
+
+      &:first-child {
+        border-left-width: 0;
+      }
+
+      &:last-child {
+        border-right-width: 1px;
+      }
     }
 
     tbody tr:hover {
@@ -120,8 +130,19 @@
     tbody td {
       @include app.text('sm');
       font-family: 'Lato', sans-serif;
-      border: 1px solid app.colors('grey-200');
       padding: $cell-padding;
+      border: 1px solid app.colors('grey-200');
+
+      border-top-width: 0;
+      border-right-width: 0;
+
+      &:first-child {
+        border-left-width: 0;
+      }
+
+      &:last-child {
+        border-right-width: 1px;
+      }
     }
   }
 </style>

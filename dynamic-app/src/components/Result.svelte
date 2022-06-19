@@ -277,6 +277,9 @@
         >
         <span>Filters ({filters.length})</span>
       </button>
+      {#if filters.length}
+        <button> Clear all </button>
+      {/if}
     </div>
 
     <DropdownActions
