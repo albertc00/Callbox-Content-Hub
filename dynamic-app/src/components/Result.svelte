@@ -225,6 +225,8 @@
     filters = [];
   }
 
+  $: console.log(filters);
+
   // filters
   $: [showfilters] = useModal({ title: 'Choose Filters' }, Filter, {
     properties: colDef.map(({ id, label }) => ({ id, label })),
